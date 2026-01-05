@@ -1,0 +1,499 @@
+---
+title: "Adoption des outils GenAI / LLMs en entreprise"
+subtitle: "Analyse par pays, secteur et métiers touchés"
+execute:
+  engine: knitr
+  echo: true
+  warning: false
+  message: false
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true   # code repliable mais visible
+webr:
+  packages: ["dplyr", "ggplot2", "readr", "stringr", "forcats"]
+  files:
+    - qmd/data/enterprise_genai_data.csv
+filters:
+  - webr
+css: styles.css
+---
+
+## Introduction de l'analyse
+
+La diffusion récente des modèles de langage (LLMs) et des outils de génération de contenu (GenAI) transforme rapidement les organisations : nouveaux cas d'usage, réallocation des tâches, création de rôles spécialisés, mais aussi inquiétudes sur l'avenir de certains métiers.
+
+Dans ce document, nous proposons une **analyse descriptive** de cette adoption en entreprise, en mettant l'accent sur :
+
+- l'émergence temporelle de la GenAI (années d'adoption),
+- les différences **entre pays** et **entre secteurs d'activité**, 
+- l'ampleur de l'impact sur la main-d'œuvre (employés impactés, nouveaux rôles, formation),
+- et la perception des salariés à travers des commentaires textuels.
+
+## Contexte et source des données
+
+Cette analyse s'appuie sur le jeu de données **"Enterprise GenAI Adoption & Workforce Impact"** publié sur Kaggle.
+
+- Auteur du dataset : utilisateur Kaggle `tfisthis`
+- Ressource originale : [Enterprise GenAI Adoption & Workforce Impact Data](https://www.kaggle.com/datasets/tfisthis/enterprise-genai-adoption-and-workforce-impact-data)
+- Unité d'observation : une entreprise
+- Variables principales :
+  - `Company Name` : nom de l'entreprise
+  - `Industry` : secteur d'activité (Technology, Healthcare, Finance, etc.)
+  - `Country` : pays de l'entreprise
+  - `GenAI Tool` : outil GenAI / LLM principalement utilisé (ChatGPT, Gemini, Claude, LLaMA, Mixtral, Groq, etc.)
+  - `Adoption Year` : année d'adoption de l'outil
+  - `Number of Employees Impacted` : nombre d'employés dont le travail est affecté par la GenAI
+  - `New Roles Created` : nombre de nouveaux rôles créés liés à la GenAI
+  - `Training Hours Provided` : volume d'heures de formation dispensées
+  - `Productivity Change (%)` : variation estimée de la productivité (en pourcentage)
+  - `Employee Sentiment` : commentaire qualitatif sur la perception des employés
+
+Le jeu de données comprend 100 000 entreprises au total, ce qui permet d'obtenir des agrégations stables par année, pays et secteur dans ce cadre simulé.
+
+L'objectif de cette analyse est de **décrire l'émergence et l'utilisation des outils GenAI / LLMs** en entreprise selon :
+
+- le **temps** (année d'adoption),
+- le **pays**,
+- le **secteur d'activité**, 
+- et l'ampleur de l'impact sur les **métiers** (employés impactés, nouveaux rôles, sentiment).
+
+```{webr}
+# Chargement des packages (sans utiliser le méta-package tidyverse)
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(stringr)
+library(forcats)
+
+# Helper : (re)charger les données et préparer genai_clean
+ensure_genai_clean <- function() {
+  # Si les données nettoyées existent déjà dans l'environnement courant, ne rien refaire
+  if (exists("genai_clean")) {
+    return(invisible(genai_clean))
+  }
+
+  # Détecter si l'on est dans l'environnement webR (prévisualisation Quarto)
+  is_webr_env <- grepl("/home/web_user", getwd())
+
+  if (is_webr_env) {
+    # En webR, on lit le fichier via une URL HTTP hébergée sur le site GitHub Pages
+    data_url <- "https://nevermind78.github.io/capstone_R/qmd/data/enterprise_genai_data.csv"
+    local_path <- "enterprise_genai_data.csv"
+
+    if (!file.exists(local_path)) {
+      ok <- FALSE
+      try({
+        download.file(data_url, destfile = local_path, quiet = TRUE)
+        ok <- file.exists(local_path)
+      }, silent = TRUE)
+
+      if (!ok) {
+        stop(paste0(
+          "Impossible de télécharger 'enterprise_genai_data.csv' depuis ", data_url, ". ",
+          "Assure-toi que le site est publié et que le fichier est bien accessible à cette URL."
+        ))
+      }
+    }
+
+    data_path <- local_path
+  } else {
+    # En rendu local (R standard), on lit directement le fichier dans le dépôt
+    candidates <- c(
+      "qmd/data/enterprise_genai_data.csv",   # rendu depuis la racine du projet
+      "data/enterprise_genai_data.csv",       # rendu depuis le dossier qmd/
+      "enterprise_genai_data.csv",           # rendu depuis le dossier data/
+      "../qmd/data/enterprise_genai_data.csv" # rendu depuis un sous-dossier éventuel
+    )
+
+    data_path <- NULL
+    for (p in candidates) {
+      if (file.exists(p)) {
+        data_path <- p
+        break
+      }
+    }
+
+    if (is.null(data_path)) {
+      stop(paste0(
+        "Le fichier 'enterprise_genai_data.csv' est introuvable dans les emplacements attendus. ",
+        "Répertoires testés (relatifs à getwd()='", getwd(), "') : ",
+        paste(candidates, collapse = ", "), "."
+      ))
+    }
+  }
+
+  # Chargement brut
+  genai <<- readr::read_csv(data_path, show_col_types = FALSE)
+
+  # Nettoyage / renommage des colonnes
+  genai_clean <<- genai %>%
+    dplyr::rename(
+      company           = `Company Name`,
+      industry          = Industry,
+      country           = Country,
+      tool              = `GenAI Tool`,
+      adoption_year     = `Adoption Year`,
+      employees_imp     = `Number of Employees Impacted`,
+      new_roles         = `New Roles Created`,
+      training_hours    = `Training Hours Provided`,
+      prod_change       = `Productivity Change (%)`,
+      sentiment         = `Employee Sentiment`
+    )
+
+  invisible(genai_clean)
+}
+
+# Charger une première fois les données au démarrage du document
+ensure_genai_clean()
+
+```
+
+## 1. Description des données
+
+Dans cette première partie, nous explorons la structure du jeu de données et les principales variables afin de vérifier qu'elles sont cohérentes avec notre problématique (pays, secteurs, outils GenAI et indicateurs d'impact sur la main-d'œuvre).
+
+```{webr}
+# Appeler le helper pour s'assurer que genai_clean est prêt
+ensure_genai_clean()
+
+summary(genai_clean)
+```
+
+### Aperçu des premières lignes
+
+```{webr}
+head(genai_clean, 10)
+```
+
+**Interprétation (description des données)**  
+Chaque ligne du tableau correspond à une entreprise. On y retrouve son pays, son secteur d'activité, l'outil GenAI principal utilisé, l'année d'adoption et plusieurs indicateurs d'impact : nombre d'employés concernés, nouveaux rôles créés, heures de formation et changement de productivité estimé. La colonne `Employee Sentiment` fournit un commentaire libre permettant une lecture plus qualitative des effets ressentis par les salariés.
+
+---
+
+## 2. Émergence temporelle des outils GenAI / LLMs
+
+### 2.1 Nombre d’entreprises par année d’adoption
+
+Nous commençons par observer à quel rythme les entreprises adoptent les outils GenAI/LLMs en fonction du temps.
+
+```{webr}
+# S'assurer que genai_clean existe
+ensure_genai_clean()
+
+adoption_by_year <- genai_clean %>%
+  count(adoption_year)
+
+adoption_by_year
+```
+
+```{webr}
+ggplot(adoption_by_year, aes(x = factor(adoption_year), y = n)) +
+  geom_col(fill = "#1f77b4") +
+  labs(
+    title = "Nombre d'entreprises ayant adopté la GenAI par année",
+    x = "Année d'adoption",
+    y = "Nombre d'entreprises"
+  ) +
+  theme_minimal()
+```
+
+**Interprétation**  
+On visualise ici le nombre d'entreprises qui déclarent avoir adopté la GenAI pour chaque année. Dans ce jeu de données, on compte 33 180 entreprises adoptantes en 2022, 33 344 en 2023 et 33 476 en 2024, soit une concentration exclusive sur la période 2022–2024 qui reflète une adoption très récente et continue.
+
+### 2.2 Évolution de la productivité moyenne par année
+
+```{webr}
+# S'assurer que genai_clean existe
+ensure_genai_clean()
+
+prod_by_year <- genai_clean %>%
+  group_by(adoption_year) %>%
+  summarise(
+    mean_prod_change = mean(prod_change, na.rm = TRUE),
+    n = n()
+  ) %>%
+  arrange(adoption_year)
+
+prod_by_year
+```
+
+```{webr}
+ggplot(prod_by_year, aes(x = adoption_year, y = mean_prod_change)) +
+  geom_line(color = "#d62728", linewidth = 1.1) +
+  geom_point(color = "#d62728", size = 2.5) +
+  labs(
+    title = "Évolution de la productivité moyenne après adoption de la GenAI",
+    x = "Année d'adoption",
+    y = "Changement de productivité moyen (%)"
+  ) +
+  theme_minimal()
+```
+
+**Interprétation**  
+Cette courbe permet de voir si les cohortes d'entreprises qui ont adopté plus tôt ou plus tard rapportent des gains de productivité similaires. Dans ce dataset, le gain moyen de productivité est d'environ 18,5 % toutes années confondues, avec des valeurs très proches selon l'année d'adoption (environ 18,5 % pour 2022, 18,4 % pour 2023 et 18,5 % pour 2024), ce qui suggère un impact positif relativement homogène dans le temps.
+
+---
+
+## 3. Adoption par pays
+
+Nous examinons maintenant la diffusion de la GenAI selon le pays, en termes de nombre d'entreprises concernées, d'employés impactés et de gains de productivité moyens.
+
+### 3.1 Nombre d’entreprises et employés impactés par pays
+
+```{webr}
+# S'assurer que genai_clean existe
+ensure_genai_clean()
+
+country_summary <- genai_clean %>%
+  group_by(country) %>%
+  summarise(
+    n_companies      = n(),
+    total_employees  = sum(employees_imp, na.rm = TRUE),
+    mean_prod_change = mean(prod_change, na.rm = TRUE)
+  ) %>%
+  arrange(desc(n_companies))
+
+country_summary
+```
+
+```{webr}
+ggplot(country_summary,
+       aes(x = fct_reorder(country, n_companies),
+           y = n_companies)) +
+  geom_col(fill = "#2ca02c") +
+  coord_flip() +
+  labs(
+    title = "Nombre d'entreprises utilisant la GenAI par pays",
+    x = "Pays",
+    y = "Nombre d'entreprises"
+  ) +
+  theme_minimal()
+```
+
+**Interprétation**  
+Les pays avec le plus grand nombre d'entreprises dans ce graphique apparaissent comme des pôles d'adoption rapide de la GenAI. Dans ce jeu de données, le top 5 par nombre d'entreprises comprend le Brésil (~7 322 entreprises), l'Australie (~7 255), le Canada (~7 238), la Corée du Sud (~7 233) et les Émirats arabes unis (~7 179). Ils combinent souvent un écosystème technologique développé et une pression concurrentielle forte pour automatiser et augmenter les tâches.
+
+### 3.2 Productivité moyenne par pays
+
+```{webr}
+ggplot(country_summary,
+       aes(x = fct_reorder(country, mean_prod_change),
+           y = mean_prod_change)) +
+  geom_col(fill = "#9467bd") +
+  coord_flip() +
+  labs(
+    title = "Changement de productivité moyen par pays",
+    x = "Pays",
+    y = "Productivité moyenne (%)"
+  ) +
+  theme_minimal()
+```
+
+**Interprétation**  
+Ce graphique compare le gain de productivité moyen entre pays. Des valeurs élevées indiquent des contextes où l'intégration de la GenAI s'accompagne d'une amélioration marquée des performances, même si cela ne dit rien sur les inégalités potentielles entre entreprises ou secteurs au sein d'un même pays.
+
+---
+
+## 4. Adoption par secteur d’activité (industries)
+
+Les secteurs d'activité jouent un rôle clé dans la façon dont la GenAI transforme les métiers : certains sont très exposés (technologie, finance, services juridiques), d'autres l'utilisent de manière plus ciblée.
+
+### 4.1 Nombre d’entreprises et employés impactés par secteur
+
+```{webr}
+# S'assurer que genai_clean existe
+ensure_genai_clean()
+
+industry_summary <- genai_clean %>%
+  group_by(industry) %>%
+  summarise(
+    n_companies      = n(),
+    total_employees  = sum(employees_imp, na.rm = TRUE),
+    total_new_roles  = sum(new_roles, na.rm = TRUE),
+    mean_prod_change = mean(prod_change, na.rm = TRUE)
+  ) %>%
+  arrange(desc(total_employees))
+
+industry_summary
+```
+
+```{webr}
+ggplot(industry_summary,
+       aes(x = fct_reorder(industry, total_employees),
+           y = total_employees)) +
+  geom_col(fill = "#ff7f0e") +
+  coord_flip() +
+  labs(
+    title = "Nombre d'employés impactés par secteur",
+    x = "Secteur d'activité",
+    y = "Nombre d'employés impactés"
+  ) +
+  theme_minimal()
+```
+
+**Interprétation**  
+Les secteurs qui concentrent le plus grand nombre d'employés impactés sont ceux où la GenAI modifie le plus massivement les tâches quotidiennes (par exemple génération de contenu, analyse de documents, support client, etc.). Dans ce dataset simulé, les secteurs Advertising, Defense, Education, Entertainment et Finance se situent en tête en termes d'employés impactés cumulés, ce qui en fait des "métiers" particulièrement exposés à court terme.
+
+### 4.2 Nouveaux rôles créés par secteur
+
+```{webr}
+ggplot(industry_summary,
+       aes(x = fct_reorder(industry, total_new_roles),
+           y = total_new_roles)) +
+  geom_col(fill = "#8c564b") +
+  coord_flip() +
+  labs(
+    title = "Nouveaux rôles créés liés à la GenAI par secteur",
+    x = "Secteur d'activité",
+    y = "Nombre de nouveaux rôles"
+  ) +
+  theme_minimal()
+```
+
+**Interprétation**  
+Ici, nous mettons en évidence les secteurs où la GenAI ne se traduit pas seulement par l'automatisation, mais aussi par la création de nouveaux rôles spécialisés (prompt engineer, data/AI specialist, référent GenAI, etc.). Un volume important de nouveaux rôles signale une reconfiguration profonde des compétences attendues.
+
+---
+
+## 5. Adoption par outil GenAI / LLM
+
+Toutes les entreprises ne choisissent pas le même outil. Cette section compare les principaux LLMs et plateformes GenAI utilisés (ChatGPT, Gemini, Claude, LLaMA, Mixtral, Groq, etc.) en termes de diffusion et de gains de productivité.
+
+### 5.1 Répartition des entreprises par outil
+
+```{webr}
+# S'assurer que genai_clean existe
+ensure_genai_clean()
+
+tool_summary <- genai_clean %>%
+  group_by(tool) %>%
+  summarise(
+    n_companies      = n(),
+    total_employees  = sum(employees_imp, na.rm = TRUE),
+    mean_prod_change = mean(prod_change, na.rm = TRUE)
+  ) %>%
+  arrange(desc(n_companies))
+
+tool_summary
+```
+
+```{webr}
+ggplot(tool_summary,
+       aes(x = fct_reorder(tool, n_companies),
+           y = n_companies)) +
+  geom_col(fill = "#17becf") +
+  coord_flip() +
+  labs(
+    title = "Répartition des entreprises par outil GenAI / LLM",
+    x = "Outil GenAI / LLM",
+    y = "Nombre d'entreprises"
+  ) +
+  theme_minimal()
+```
+
+**Interprétation**  
+Les outils les plus fréquemment déclarés dans ce graphique sont ceux qui se sont imposés comme standards de fait pour les entreprises (par exemple pour le support, la rédaction assistée ou l'analyse de texte). Ici, les outils les plus répandus sont Gemini (~16 885 entreprises), Groq (~16 748), LLaMA (~16 676), Mixtral (~16 667), ChatGPT (~16 663) et Claude (~16 361), ce qui souligne un paysage concurrentiel relativement équilibré entre quelques grands acteurs.
+
+### 5.2 Productivité moyenne par outil
+
+```{webr}
+ggplot(tool_summary,
+       aes(x = fct_reorder(tool, mean_prod_change),
+           y = mean_prod_change)) +
+  geom_col(fill = "#bcbd22") +
+  coord_flip() +
+  labs(
+    title = "Changement de productivité moyen par outil GenAI / LLM",
+    x = "Outil GenAI / LLM",
+    y = "Productivité moyenne (%)"
+  ) +
+  theme_minimal()
+```
+
+**Interprétation**  
+Ce graphique compare les gains de productivité moyens associés à chaque outil. Il permet d'identifier les solutions qui, dans ce jeu de données, sont perçues comme apportant le plus de valeur ajoutée, tout en gardant à l'esprit que ces différences peuvent aussi refléter les contextes d'usage (types de tâches, niveau de maturité des équipes, etc.).
+
+---
+
+## 6. Métiers touchés : employés impactés et nouveaux rôles
+
+Comme le jeu de données ne contient pas d'intitulé de poste détaillé, nous approchons les "métiers" touchés via deux indicateurs :
+
+- le nombre d'**employés impactés** (`employees_imp`),
+- le nombre de **nouveaux rôles créés** (`new_roles`).
+
+```{webr}
+# S'assurer que genai_clean existe
+ensure_genai_clean()
+
+country_industry <- genai_clean %>%
+  group_by(country, industry) %>%
+  summarise(
+    n_companies     = n(),
+    employees_total = sum(employees_imp, na.rm = TRUE),
+    new_roles_total = sum(new_roles, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+head(country_industry)
+```
+
+```{webr}
+# Heatmap employés impactés par pays x secteur (quartile supérieur)
+top_ci <- country_industry %>%
+  filter(employees_total > quantile(employees_total, 0.75))
+
+if (nrow(top_ci) > 0) {
+  ggplot(top_ci,
+         aes(x = country, y = industry, fill = employees_total)) +
+    geom_tile(color = "white") +
+    scale_fill_viridis_c() +
+    labs(
+      title = "Employés impactés par pays et secteur (quartile supérieur)",
+      x = "Pays",
+      y = "Secteur d'activité",
+      fill = "Employés impactés"
+    ) +
+    theme_minimal()
+}
+```
+
+**Interprétation**  
+Cette heatmap met en avant les combinaisons pays × secteur où le nombre d'employés impactés est le plus élevé (quartile supérieur). Ce sont les endroits où la transformation des métiers est a priori la plus forte et la plus visible dans l'organisation.
+
+---
+
+## 7. Sentiment des employés face à la GenAI
+
+Enfin, nous examinons de manière simple la perception des salariés à travers la variable textuelle `Employee Sentiment`, en comptant quelques mots-clés illustrant inquiétude et enthousiasme.
+
+```{webr}
+# S'assurer que genai_clean existe
+ensure_genai_clean()
+
+# Exemple simple : compter quelques mots-clés dans les commentaires
+sentiment_keywords <- c("anxiety", "concern", "love", "exciting", "uncertain", "fun")
+
+for (kw in sentiment_keywords) {
+  cat("\nMot-clé:", kw, "\n")
+  print(
+    genai_clean %>%
+      filter(str_detect(str_to_lower(sentiment), kw)) %>%
+      summarise(n = n())
+  )
+}
+```
+
+**Interprétation**  
+On observe généralement un mélange de termes associant la GenAI à des gains ("love", "exciting", "fun") et à des craintes ("anxiety", "concern", "uncertain"). Cela illustre bien la tension entre les promesses d'augmentation de la productivité et les inquiétudes liées à la transformation ou à la disparition de certains rôles.
+
+---
+
+## 8. Conclusion
+
+- L'adoption des outils GenAI / LLMs en entreprise s'est fortement développée sur la période récente 2022–2024 (période couverte par le jeu de données).
+- Certains pays et secteurs concentrent davantage d'entreprises et d'employés impactés, indiquant des transformations profondes des métiers.
+- La productivité moyenne est globalement en hausse après l'adoption, même si les retours des employés montrent un mélange d'enthousiasme et d'inquiétude.
+- Les nouveaux rôles créés et le volume d'employés concernés suggèrent une reconfiguration importante des organisations et des compétences.

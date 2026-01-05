@@ -1,0 +1,22 @@
+---
+title: "Template Project For Elements of Applied Statistics "
+subtitle: "Template and Ideas"
+---
+
+## Introduction
+
+This website contains a collection of template for capstone's Statistics with **R**. The aim is to provide insight in fundamental principles and 
+a broad overview and to enable students to select and understand specific books and online material to dig in deeper in the diverse and fascinating field of statistics.
+
+
+
+## Related Pages
+
+* [**Lecture slides**]()
+* [**Datasets**]()
+* [**GenAI Enterprise Analysis**](qmd/enterprise_genai_analysis.qmd)
+* [Source code \ github]()
+
+## Author
+
+Abdallah Khemais
