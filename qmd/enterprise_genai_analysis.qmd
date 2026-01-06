@@ -11,8 +11,30 @@ format:
     toc: true
     toc-depth: 3
     code-fold: true   # code repliable mais visible
+  pdf:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    colorlinks: true
+    geometry:
+      - margin=2.5cm
+    papersize: a4
+    documentclass: article
+    keep-tex: false
 css: styles.css
 ---
+
+---
+
+::: {.callout-tip icon=false}
+## 📥 Télécharger ce rapport
+
+Ce rapport est également disponible au format PDF pour impression ou archivage.
+
+<a href="enterprise_genai_analysis.pdf" class="btn btn-primary" download style="display: inline-block; padding: 10px 20px; background-color: #0d6efd; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 10px;">
+  📄 Télécharger le PDF
+</a>
+:::
 
 ## Introduction de l'analyse
 
