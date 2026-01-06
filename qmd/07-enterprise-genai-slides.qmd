@@ -3,7 +3,7 @@ title: "Adoption des outils GenAI / LLMs en entreprise"
 subtitle: "Présentation synthétique des résultats"
 format:
   revealjs:
-    theme: simple
+    theme: night
     slide-number: true
     incremental: true
     transition: fade
@@ -47,16 +47,16 @@ data_path <- candidates[file.exists(candidates)][1]
 if (is.na(data_path)) stop("Data file not found in expected locations.")
 
 genai <- readr::read_csv(data_path, show_col_types = FALSE) %>%
-  dplyr::rename(
-    country       = Country,
-    industry      = Industry,
-    tool          = `GenAI Tool`,
-    adoption_year = `Adoption Year`,
-    employees_imp = `Number of Employees Impacted`,
-    new_roles     = `New Roles Created`,
-    prod_change   = `Productivity Change (%)`,
-    sentiment     = `Employee Sentiment`
-  )
+    dplyr::rename(
+        country       = Country,
+        industry      = Industry,
+        tool          = `GenAI Tool`,
+        adoption_year = `Adoption Year`,
+        employees_imp = `Number of Employees Impacted`,
+        new_roles     = `New Roles Created`,
+        prod_change   = `Productivity Change (%)`,
+        sentiment     = `Employee Sentiment`
+    )
 ```
 
 ---
@@ -65,20 +65,23 @@ genai <- readr::read_csv(data_path, show_col_types = FALSE) %>%
 
 ```{r}
 adoption_by_year <- genai %>%
-  count(adoption_year)
+    count(adoption_year)
 
-adoption_by_year
 ```
 
 ```{r}
 ggplot(adoption_by_year, aes(x = factor(adoption_year), y = n)) +
-  geom_col(fill = "#1f77b4") +
-  labs(
-    title = "Nombre d'entreprises ayant adopté la GenAI par année",
-    x = "Année d'adoption",
-    y = "Nombre d'entreprises"
-  ) +
-  theme_minimal(base_size = 14)
+    geom_text(aes(label = scales::comma(n)), vjust = -0.5, color = "white", size = 5) +
+    scale_y_continuous(labels = scales::comma) +
+    labs(x = NULL, y = NULL) +
+    theme_minimal(base_size = 14) +
+    theme(
+        plot.title = element_text(color = "white"),
+        text = element_text(color = "white"),
+        axis.text = element_text(color = "white"),
+        panel.grid = element_line(color = "#555555")
+    ) +
+    expand_limits(y = max(adoption_by_year$n) * 1.1)
 ```
 
 ---
@@ -87,25 +90,30 @@ ggplot(adoption_by_year, aes(x = factor(adoption_year), y = n)) +
 
 ```{r}
 prod_by_year <- genai %>%
-  group_by(adoption_year) %>%
-  summarise(
-    mean_prod_change = mean(prod_change, na.rm = TRUE),
-    .groups = "drop"
-  )
+    group_by(adoption_year) %>%
+    summarise(
+        mean_prod_change = mean(prod_change, na.rm = TRUE),
+        .groups = "drop"
+    )
 
-prod_by_year
 ```
 
 ```{r}
 ggplot(prod_by_year, aes(x = adoption_year, y = mean_prod_change)) +
-  geom_line(color = "#d62728", linewidth = 1.2) +
-  geom_point(color = "#d62728", size = 3) +
-  labs(
-    title = "Évolution de la productivité moyenne",
-    x = "Année d'adoption",
-    y = "Productivité moyenne (%)"
-  ) +
-  theme_minimal(base_size = 14)
+    geom_line(color = "#d62728", linewidth = 1.2) +
+    geom_point(color = "#d62728", size = 3) +
+    geom_text(aes(label = paste0(round(mean_prod_change, 1), "%")), vjust = -1.5, color = "white", size = 5) +
+    scale_y_continuous(labels = function(x) paste0(x, "%")) +
+    labs(x = NULL, y = NULL) +
+    theme_minimal(base_size = 14) +
+    theme(
+        plot.title = element_text(color = "white"),
+        text = element_text(color = "white"),
+        axis.text = element_text(color = "white"),
+        panel.grid = element_line(color = "#555555")
+    ) +
+    expand_limits(y = c(0, 20)) +
+    expand_limits(y = 0) # Correction échelle
 ```
 
 ---
@@ -114,31 +122,37 @@ ggplot(prod_by_year, aes(x = adoption_year, y = mean_prod_change)) +
 
 ```{r}
 country_summary <- genai %>%
-  group_by(country) %>%
-  summarise(
-    n_companies     = n(),
-    employees_total = sum(employees_imp, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  arrange(desc(n_companies)) %>%
-  slice_head(n = 10)
+    group_by(country) %>%
+    summarise(
+        n_companies = n(),
+        employees_total = sum(employees_imp, na.rm = TRUE),
+        .groups = "drop"
+    ) %>%
+    arrange(desc(n_companies)) %>%
+    slice_head(n = 10)
 
-country_summary
 ```
 
 ```{r}
 library(forcats)
 
-ggplot(country_summary,
-       aes(x = fct_reorder(country, n_companies), y = n_companies)) +
-  geom_col(fill = "#2ca02c") +
-  coord_flip() +
-  labs(
-    title = "Top 10 des pays par nombre d'entreprises",
-    x = "Pays",
-    y = "Nombre d'entreprises"
-  ) +
-  theme_minimal(base_size = 14)
+ggplot(
+    country_summary,
+    aes(x = fct_reorder(country, n_companies), y = n_companies)
+) +
+    geom_col(fill = "#2ca02c") +
+    geom_text(aes(label = scales::comma(n_companies)), hjust = 1.2, color = "white", size = 4) +
+    scale_y_continuous(labels = scales::comma) +
+    scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 20)) +
+    coord_flip() +
+    labs(x = NULL, y = NULL) +
+    theme_minimal(base_size = 14) +
+    theme(
+        plot.title = element_text(color = "white"),
+        text = element_text(color = "white"),
+        axis.text = element_text(color = "white"),
+        panel.grid = element_line(color = "#555555")
+    )
 ```
 
 ---
@@ -150,42 +164,81 @@ ggplot(country_summary,
 
 ```{r}
 industry_summary <- genai %>%
-  group_by(industry) %>%
-  summarise(
-    employees_total = sum(employees_imp, na.rm = TRUE),
-    new_roles_total = sum(new_roles, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  arrange(desc(employees_total)) %>%
-  slice_head(n = 10)
+    group_by(industry) %>%
+    summarise(
+        employees_total = sum(employees_imp, na.rm = TRUE),
+        new_roles_total = sum(new_roles, na.rm = TRUE),
+        .groups = "drop"
+    ) %>%
+    arrange(desc(employees_total)) %>%
+    slice_head(n = 10)
 
-industry_summary
 ```
 
 ```{r}
-ggplot(industry_summary,
-       aes(x = fct_reorder(industry, employees_total), y = employees_total)) +
-  geom_col(fill = "#ff7f0e") +
-  coord_flip() +
-  labs(
-    title = "Top 10 secteurs par employés impactés",
-    x = "Secteur",
-    y = "Employés impactés"
-  ) +
-  theme_minimal(base_size = 14)
+ggplot(
+    industry_summary,
+    aes(x = fct_reorder(industry, employees_total), y = employees_total)
+) +
+    geom_col(fill = "#ff7f0e") +
+    geom_text(aes(label = scales::scientific(employees_total, digits = 2)), hjust = 1.1, color = "white", size = 4) +
+    scale_y_continuous(labels = scales::label_number(scale = 1e-6, suffix = "M")) +
+    coord_flip() +
+    labs(x = NULL, y = NULL) +
+    theme_minimal(base_size = 14) +
+    theme(
+        plot.title = element_text(color = "white"),
+        text = element_text(color = "white"),
+        axis.text = element_text(color = "white"),
+        panel.grid = element_line(color = "#555555")
+    )
 ```
+
+---
+
+## Performance par Outil
+
+- Question : L'outil choisi impacte-t-il le gain de productivité ?
+- Méthode : Test ANOVA
+
+```{r}
+tool_stats <- genai %>%
+    group_by(tool) %>%
+    summarise(
+        mean_prod = mean(prod_change, na.rm = TRUE),
+        sd = sd(prod_change, na.rm = TRUE),
+        n = n(),
+        se = sd / sqrt(n)
+    )
+
+ggplot(tool_stats, aes(x = reorder(tool, mean_prod), y = mean_prod, fill = tool)) +
+    geom_col() +
+    geom_errorbar(aes(ymin = mean_prod - 1.96 * se, ymax = mean_prod + 1.96 * se), width = 0.2, color = "white") +
+    geom_text(aes(label = paste0(round(mean_prod, 1), "%")), hjust = 1.2, color = "white", size = 4) +
+    expand_limits(y = c(0, 22)) +
+    coord_flip() +
+    labs(x = NULL, y = NULL) +
+    theme_minimal(base_size = 14) +
+    theme(
+        legend.position = "none",
+        plot.title = element_text(color = "white"),
+        text = element_text(color = "white"),
+        axis.text = element_text(color = "white"),
+        panel.grid = element_line(color = "#555555")
+    )
+```
+
+**Résultat** : Aucune différence significative. Tous les outils se valent (~18.5%).
 
 ---
 
 ## Conclusion
 
-- Adoption très récente (2022–2024) mais massive
-- Fort impact dans certains pays et secteurs
-- Gains de productivité globalement positifs
-- Ressenti des salariés : mélange d'enthousiasme et d'inquiétudes
+- **Adoption massive** (2022–2024)
+- **Podium Pays** : Brésil, Australie, Canada
+- **Productivité** : Gain stable (~18.5%) peu importe l'année ou l'outil
+- **Impact Humain** : Inquiétude réelle malgré les gains
 
 **Perspectives :**
-
-- Approfondir l'analyse des textes (`sentiment`)
-- Croiser avec d'autres indicateurs (performances, emplois, formation)
-- Discuter des implications pour les politiques RH et la formation continue
+- L'accompagnement (Formation) doit évoluer (pas d'impact volume actuellement)
+- Mieux cibler les cas d'usage par métier

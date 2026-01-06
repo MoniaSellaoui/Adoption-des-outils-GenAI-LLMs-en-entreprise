@@ -237,9 +237,10 @@ ggplot(prod_by_year, aes(x = adoption_year, y = mean_prod_change)) +
     geom_line(color = "#d62728", size = 1.2) +
     geom_point(color = "#d62728", size = 3) +
     scale_x_continuous(breaks = unique(prod_by_year$adoption_year)) +
+    expand_limits(y = 0) + # Forcer l'axe Y à partir de 0 pour éviter l'effet loupe
     labs(
         title = "Évolution de la productivité moyenne",
-        subtitle = "Tendance par année d'adoption",
+        subtitle = "Tendance par année d'adoption (échelle ajustée)",
         x = "Année d'adoption",
         y = "Productivité moyenne (%)"
     ) +
@@ -314,7 +315,7 @@ ggplot(
 ```
 
 **Interprétation**  
-Les pays avec le plus grand nombre d'entreprises dans ce graphique apparaissent comme des pôles d'adoption rapide de la GenAI. Dans ce jeu de données, le top 5 par nombre d'entreprises comprend le Brésil (~7 322 entreprises), l'Australie (~7 255), le Canada (~7 238), la Corée du Sud (~7 233) et les Émirats arabes unis (~7 179). Ils combinent souvent un écosystème technologique développé et une pression concurrentielle forte pour automatiser et augmenter les tâches.
+Les pays avec le plus grand nombre d'entreprises dans ce graphique apparaissent comme des pôles d'adoption rapide de la GenAI. Dans ce jeu de données, le podium par nombre d'entreprises comprend le **Brésil** (~7 322 entreprises), l'**Australie** (~7 255) et le **Canada** (~7 238), suivis de près par la Corée du Sud et les Émirats Arabes Unis. Ils combinent souvent un écosystème technologique développé et une pression concurrentielle forte pour automatiser et augmenter les tâches.
 
 ### 3.2 Productivité moyenne par pays
 
@@ -563,7 +564,8 @@ if (nrow(top_ci) > 0) {
             y = "Secteur d'activité",
             fill = "Employés impactés"
         ) +
-        theme_minimal()
+        theme_minimal() +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1))
 }
 ```
 
@@ -608,7 +610,67 @@ On observe généralement un mélange de termes associant la GenAI à des gains 
 
 ---
 
-## 8. Conclusion
+## 8. Analyse de la performance par Outil GenAI
+
+Pour aller au-delà de la simple description, nous testons ici statistiquement si certains outils sont significativement plus performants que d'autres en termes de gain de productivité.
+
+### 8.1 Comparaison des moyennes et Test ANOVA
+
+Nous utilisons un test **ANOVA (Analysis of Variance)** pour vérifier l'hypothèse nulle : *"Tous les outils apportent le même gain moyen de productivité"*.
+
+```{r}
+#| results: hide
+
+# S'assurer que les données sont chargées
+ensure_genai_clean()
+
+# 1. Calcul des moyennes et intervalles de confiance par outil
+tool_performance <- genai_clean %>%
+    group_by(tool) %>%
+    summarise(
+        mean_prod = mean(prod_change, na.rm = TRUE),
+        sd_prod   = sd(prod_change, na.rm = TRUE),
+        n         = n(),
+        se        = sd_prod / sqrt(n), # Erreur standard
+        ci_lower  = mean_prod - 1.96 * se,
+        ci_upper  = mean_prod + 1.96 * se
+    ) %>%
+    arrange(desc(mean_prod))
+
+# 2. Test ANOVA
+anova_res <- aov(prod_change ~ tool, data = genai_clean)
+anova_summary <- summary(anova_res)
+p_val_anova <- anova_summary[[1]][["Pr(>F)"]][1]
+
+# Visualisation (Barplot avec barres d'erreur)
+ggplot(tool_performance, aes(x = reorder(tool, mean_prod), y = mean_prod, fill = tool)) +
+    geom_col(alpha = 0.8, width = 0.7) +
+    geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.2, color = "black") +
+    geom_text(aes(label = round(mean_prod, 2)), vjust = -1.5, fontface = "bold") +
+    expand_limits(y = c(0, max(tool_performance$ci_upper) * 1.1)) +
+    labs(
+        title = "Performance moyenne par Outil GenAI",
+        subtitle = paste0("Comparaison avec intervalle de confiance à 95% (ANOVA p-value: ", format.pval(p_val_anova, digits = 3), ")"),
+        x = "Outil",
+        y = "Gain de productivité moyen (%)"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "none") +
+    coord_flip() # Plus lisible pour les noms d'outils
+```
+
+**Interprétation statistique :**
+- **Moyennes :** Les outils présentent des scores de productivité extrêmement proches (tous autour de 18.4% - 18.5%).
+- **Test ANOVA :** La p-value est de **`r p_val_anova`**.
+    - Si elle est **< 0.05**, il existe une différence significative entre au moins deux outils.
+    - Si elle est **> 0.05**, les différences observées sont dues au hasard et aucun outil n'est statistiquement supérieur aux autres.
+
+*Note : Les barres d'erreur (segments noirs) représentent l'intervalle de confiance. Si elles se chevauchent largement, cela confirme visuellement l'absence de différence majeure.*
+
+---
+
+
+## 9. Conclusion
 
 - L'adoption des outils GenAI / LLMs en entreprise s'est fortement développée sur la période récente 2022–2024 (période couverte par le jeu de données).
 - Certains pays et secteurs concentrent davantage d'entreprises et d'employés impactés, indiquant des transformations profondes des métiers.
