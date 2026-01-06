@@ -1,0 +1,191 @@
+---
+title: "Adoption des outils GenAI / LLMs en entreprise"
+subtitle: "Présentation synthétique des résultats"
+format:
+  revealjs:
+    theme: simple
+    slide-number: true
+    incremental: true
+    transition: fade
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Objectifs du projet
+
+- Décrire l'adoption des outils GenAI / LLMs en entreprise
+- Comparer pays et secteurs d'activité
+- Mesurer l'impact sur :
+  - le nombre d'employés impactés
+  - les nouveaux rôles créés
+  - la productivité déclarée
+- Illustrer le ressenti des salariés ("Employee Sentiment")
+
+---
+
+## Données utilisées
+
+- Source : **"Enterprise GenAI Adoption & Workforce Impact"** (Kaggle)
+- Unité : 1 ligne = 1 entreprise
+- Variables clés :
+  - `country`, `industry`, `tool`, `adoption_year`
+  - `employees_imp`, `new_roles`, `training_hours`
+  - `prod_change` (changement de productivité en %)
+  - `sentiment` (commentaire texte)
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(readr)
+
+# Chargement rapide des données (version simplifiée par rapport au rapport complet)
+candidates <- c("qmd/data/enterprise_genai_data.csv", "data/enterprise_genai_data.csv")
+data_path <- candidates[file.exists(candidates)][1]
+
+if (is.na(data_path)) stop("Data file not found in expected locations.")
+
+genai <- readr::read_csv(data_path, show_col_types = FALSE) %>%
+  dplyr::rename(
+    country       = Country,
+    industry      = Industry,
+    tool          = `GenAI Tool`,
+    adoption_year = `Adoption Year`,
+    employees_imp = `Number of Employees Impacted`,
+    new_roles     = `New Roles Created`,
+    prod_change   = `Productivity Change (%)`,
+    sentiment     = `Employee Sentiment`
+  )
+```
+
+---
+
+## Émergence temporelle
+
+```{r}
+adoption_by_year <- genai %>%
+  count(adoption_year)
+
+adoption_by_year
+```
+
+```{r}
+ggplot(adoption_by_year, aes(x = factor(adoption_year), y = n)) +
+  geom_col(fill = "#1f77b4") +
+  labs(
+    title = "Nombre d'entreprises ayant adopté la GenAI par année",
+    x = "Année d'adoption",
+    y = "Nombre d'entreprises"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+---
+
+## Productivité moyenne par année
+
+```{r}
+prod_by_year <- genai %>%
+  group_by(adoption_year) %>%
+  summarise(
+    mean_prod_change = mean(prod_change, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+prod_by_year
+```
+
+```{r}
+ggplot(prod_by_year, aes(x = adoption_year, y = mean_prod_change)) +
+  geom_line(color = "#d62728", linewidth = 1.2) +
+  geom_point(color = "#d62728", size = 3) +
+  labs(
+    title = "Évolution de la productivité moyenne",
+    x = "Année d'adoption",
+    y = "Productivité moyenne (%)"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+---
+
+## Pays les plus concernés
+
+```{r}
+country_summary <- genai %>%
+  group_by(country) %>%
+  summarise(
+    n_companies     = n(),
+    employees_total = sum(employees_imp, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(n_companies)) %>%
+  slice_head(n = 10)
+
+country_summary
+```
+
+```{r}
+library(forcats)
+
+ggplot(country_summary,
+       aes(x = fct_reorder(country, n_companies), y = n_companies)) +
+  geom_col(fill = "#2ca02c") +
+  coord_flip() +
+  labs(
+    title = "Top 10 des pays par nombre d'entreprises",
+    x = "Pays",
+    y = "Nombre d'entreprises"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+---
+
+## Secteurs et métiers
+
+- Secteurs avec le plus d'employés impactés
+- Nouveaux rôles créés (prompt engineer, data/AI specialist, etc.)
+
+```{r}
+industry_summary <- genai %>%
+  group_by(industry) %>%
+  summarise(
+    employees_total = sum(employees_imp, na.rm = TRUE),
+    new_roles_total = sum(new_roles, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(employees_total)) %>%
+  slice_head(n = 10)
+
+industry_summary
+```
+
+```{r}
+ggplot(industry_summary,
+       aes(x = fct_reorder(industry, employees_total), y = employees_total)) +
+  geom_col(fill = "#ff7f0e") +
+  coord_flip() +
+  labs(
+    title = "Top 10 secteurs par employés impactés",
+    x = "Secteur",
+    y = "Employés impactés"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+---
+
+## Conclusion
+
+- Adoption très récente (2022–2024) mais massive
+- Fort impact dans certains pays et secteurs
+- Gains de productivité globalement positifs
+- Ressenti des salariés : mélange d'enthousiasme et d'inquiétudes
+
+**Perspectives :**
+
+- Approfondir l'analyse des textes (`sentiment`)
+- Croiser avec d'autres indicateurs (performances, emplois, formation)
+- Discuter des implications pour les politiques RH et la formation continue

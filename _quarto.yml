@@ -19,10 +19,10 @@ website:
     contents:
       - section: Projects
         contents:
-         
           - qmd/enterprise_genai_analysis.qmd
-     
-     
+      - section: Presentations
+        contents:
+          - qmd/07-enterprise-genai-slides.qmd
 
 format:
   html:
