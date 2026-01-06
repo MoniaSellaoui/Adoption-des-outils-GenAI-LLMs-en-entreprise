@@ -19,18 +19,10 @@ website:
     contents:
       - section: Projects
         contents:
-          - qmd/01-pivot-tables-with-libreoffice.qmd
-          - qmd/03-discharge-elbe.qmd
-          - qmd/04-distributions-leaves.qmd
-          - qmd/05-distributions-fruits-tidyverse.qmd
-          - qmd/test_stat.qmd
+         
           - qmd/enterprise_genai_analysis.qmd
-      - section: Presentations
-        contents:
-          - qmd/06-classical-tests.qmd
-      - section: other
-        contents:
-          - qmd/other.qmd
+     
+     
 
 format:
   html:
@@ -61,7 +53,7 @@ webr:
 execute:
   freeze: false
   cache: false
-  echo: false
+  echo: true        # afficher le code, mais replié par défaut grâce à code-fold
   warning: false
   message: false
   engine: knitr  # FORCER Knitr pour tout le projet

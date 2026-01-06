@@ -11,12 +11,6 @@ format:
     toc: true
     toc-depth: 3
     code-fold: true   # code repliable mais visible
-webr:
-  packages: ["dplyr", "ggplot2", "readr", "stringr", "forcats"]
-  files:
-    - qmd/data/enterprise_genai_data.csv
-filters:
-  - webr
 css: styles.css
 ---
 
@@ -59,7 +53,7 @@ L'objectif de cette analyse est de **décrire l'émergence et l'utilisation des 
 - le **secteur d'activité**, 
 - et l'ampleur de l'impact sur les **métiers** (employés impactés, nouveaux rôles, sentiment).
 
-```{webr}
+```{r}
 # Chargement des packages (sans utiliser le méta-package tidyverse)
 library(dplyr)
 library(ggplot2)
@@ -69,80 +63,83 @@ library(forcats)
 
 # Helper : (re)charger les données et préparer genai_clean
 ensure_genai_clean <- function() {
-  # Si les données nettoyées existent déjà dans l'environnement courant, ne rien refaire
-  if (exists("genai_clean")) {
-    return(invisible(genai_clean))
-  }
-
-  # Détecter si l'on est dans l'environnement webR (prévisualisation Quarto)
-  is_webr_env <- grepl("/home/web_user", getwd())
-
-  if (is_webr_env) {
-    # En webR, on lit le fichier via une URL HTTP hébergée sur le site GitHub Pages
-    data_url <- "https://nevermind78.github.io/capstone_R/qmd/data/enterprise_genai_data.csv"
-    local_path <- "enterprise_genai_data.csv"
-
-    if (!file.exists(local_path)) {
-      ok <- FALSE
-      try({
-        download.file(data_url, destfile = local_path, quiet = TRUE)
-        ok <- file.exists(local_path)
-      }, silent = TRUE)
-
-      if (!ok) {
-        stop(paste0(
-          "Impossible de télécharger 'enterprise_genai_data.csv' depuis ", data_url, ". ",
-          "Assure-toi que le site est publié et que le fichier est bien accessible à cette URL."
-        ))
-      }
+    # Si les données nettoyées existent déjà dans l'environnement courant, ne rien refaire
+    if (exists("genai_clean")) {
+        return(invisible(genai_clean))
     }
 
-    data_path <- local_path
-  } else {
-    # En rendu local (R standard), on lit directement le fichier dans le dépôt
-    candidates <- c(
-      "qmd/data/enterprise_genai_data.csv",   # rendu depuis la racine du projet
-      "data/enterprise_genai_data.csv",       # rendu depuis le dossier qmd/
-      "enterprise_genai_data.csv",           # rendu depuis le dossier data/
-      "../qmd/data/enterprise_genai_data.csv" # rendu depuis un sous-dossier éventuel
-    )
+    # Détecter si l'on est dans l'environnement webR (prévisualisation Quarto)
+    is_webr_env <- grepl("/home/web_user", getwd())
 
-    data_path <- NULL
-    for (p in candidates) {
-      if (file.exists(p)) {
-        data_path <- p
-        break
-      }
+    if (is_webr_env) {
+        # En webR, on lit le fichier via une URL HTTP hébergée sur le site GitHub Pages
+        data_url <- "https://raw.githubusercontent.com/MoniaSellaoui/Adoption-des-outils-GenAI-LLMs-en-entreprise/master/qmd/data/enterprise_genai_data.csv"
+        local_path <- "enterprise_genai_data.csv"
+
+        if (!file.exists(local_path)) {
+            ok <- FALSE
+            try(
+                {
+                    download.file(data_url, destfile = local_path, quiet = TRUE)
+                    ok <- file.exists(local_path)
+                },
+                silent = TRUE
+            )
+
+            if (!ok) {
+                stop(paste0(
+                    "Impossible de télécharger 'enterprise_genai_data.csv' depuis ", data_url, ". ",
+                    "Assure-toi que le site est publié et que le fichier est bien accessible à cette URL."
+                ))
+            }
+        }
+
+        data_path <- local_path
+    } else {
+        # En rendu local (R standard), on lit directement le fichier dans le dépôt
+        candidates <- c(
+            "qmd/data/enterprise_genai_data.csv", # rendu depuis la racine du projet
+            "data/enterprise_genai_data.csv", # rendu depuis le dossier qmd/
+            "enterprise_genai_data.csv", # rendu depuis le dossier data/
+            "../qmd/data/enterprise_genai_data.csv" # rendu depuis un sous-dossier éventuel
+        )
+
+        data_path <- NULL
+        for (p in candidates) {
+            if (file.exists(p)) {
+                data_path <- p
+                break
+            }
+        }
+
+        if (is.null(data_path)) {
+            stop(paste0(
+                "Le fichier 'enterprise_genai_data.csv' est introuvable dans les emplacements attendus. ",
+                "Répertoires testés (relatifs à getwd()='", getwd(), "') : ",
+                paste(candidates, collapse = ", "), "."
+            ))
+        }
     }
 
-    if (is.null(data_path)) {
-      stop(paste0(
-        "Le fichier 'enterprise_genai_data.csv' est introuvable dans les emplacements attendus. ",
-        "Répertoires testés (relatifs à getwd()='", getwd(), "') : ",
-        paste(candidates, collapse = ", "), "."
-      ))
-    }
-  }
+    # Chargement brut
+    genai <<- readr::read_csv(data_path, show_col_types = FALSE)
 
-  # Chargement brut
-  genai <<- readr::read_csv(data_path, show_col_types = FALSE)
+    # Nettoyage / renommage des colonnes
+    genai_clean <<- genai %>%
+        dplyr::rename(
+            company           = `Company Name`,
+            industry          = Industry,
+            country           = Country,
+            tool              = `GenAI Tool`,
+            adoption_year     = `Adoption Year`,
+            employees_imp     = `Number of Employees Impacted`,
+            new_roles         = `New Roles Created`,
+            training_hours    = `Training Hours Provided`,
+            prod_change       = `Productivity Change (%)`,
+            sentiment         = `Employee Sentiment`
+        )
 
-  # Nettoyage / renommage des colonnes
-  genai_clean <<- genai %>%
-    dplyr::rename(
-      company           = `Company Name`,
-      industry          = Industry,
-      country           = Country,
-      tool              = `GenAI Tool`,
-      adoption_year     = `Adoption Year`,
-      employees_imp     = `Number of Employees Impacted`,
-      new_roles         = `New Roles Created`,
-      training_hours    = `Training Hours Provided`,
-      prod_change       = `Productivity Change (%)`,
-      sentiment         = `Employee Sentiment`
-    )
-
-  invisible(genai_clean)
+    invisible(genai_clean)
 }
 
 # Charger une première fois les données au démarrage du document
@@ -154,7 +151,7 @@ ensure_genai_clean()
 
 Dans cette première partie, nous explorons la structure du jeu de données et les principales variables afin de vérifier qu'elles sont cohérentes avec notre problématique (pays, secteurs, outils GenAI et indicateurs d'impact sur la main-d'œuvre).
 
-```{webr}
+```{r}
 # Appeler le helper pour s'assurer que genai_clean est prêt
 ensure_genai_clean()
 
@@ -163,7 +160,7 @@ summary(genai_clean)
 
 ### Aperçu des premières lignes
 
-```{webr}
+```{r}
 head(genai_clean, 10)
 ```
 
@@ -178,25 +175,25 @@ Chaque ligne du tableau correspond à une entreprise. On y retrouve son pays, so
 
 Nous commençons par observer à quel rythme les entreprises adoptent les outils GenAI/LLMs en fonction du temps.
 
-```{webr}
+```{r}
 # S'assurer que genai_clean existe
 ensure_genai_clean()
 
 adoption_by_year <- genai_clean %>%
-  count(adoption_year)
+    count(adoption_year)
 
 adoption_by_year
 ```
 
-```{webr}
+```{r}
 ggplot(adoption_by_year, aes(x = factor(adoption_year), y = n)) +
-  geom_col(fill = "#1f77b4") +
-  labs(
-    title = "Nombre d'entreprises ayant adopté la GenAI par année",
-    x = "Année d'adoption",
-    y = "Nombre d'entreprises"
-  ) +
-  theme_minimal()
+    geom_col(fill = "#1f77b4") +
+    labs(
+        title = "Nombre d'entreprises ayant adopté la GenAI par année",
+        x = "Année d'adoption",
+        y = "Nombre d'entreprises"
+    ) +
+    theme_minimal()
 ```
 
 **Interprétation**  
@@ -204,31 +201,31 @@ On visualise ici le nombre d'entreprises qui déclarent avoir adopté la GenAI p
 
 ### 2.2 Évolution de la productivité moyenne par année
 
-```{webr}
+```{r}
 # S'assurer que genai_clean existe
 ensure_genai_clean()
 
 prod_by_year <- genai_clean %>%
-  group_by(adoption_year) %>%
-  summarise(
-    mean_prod_change = mean(prod_change, na.rm = TRUE),
-    n = n()
-  ) %>%
-  arrange(adoption_year)
+    group_by(adoption_year) %>%
+    summarise(
+        mean_prod_change = mean(prod_change, na.rm = TRUE),
+        n = n()
+    ) %>%
+    arrange(adoption_year)
 
 prod_by_year
 ```
 
-```{webr}
+```{r}
 ggplot(prod_by_year, aes(x = adoption_year, y = mean_prod_change)) +
-  geom_line(color = "#d62728", linewidth = 1.1) +
-  geom_point(color = "#d62728", size = 2.5) +
-  labs(
-    title = "Évolution de la productivité moyenne après adoption de la GenAI",
-    x = "Année d'adoption",
-    y = "Changement de productivité moyen (%)"
-  ) +
-  theme_minimal()
+    geom_line(color = "#d62728", linewidth = 1.1) +
+    geom_point(color = "#d62728", size = 2.5) +
+    labs(
+        title = "Évolution de la productivité moyenne après adoption de la GenAI",
+        x = "Année d'adoption",
+        y = "Changement de productivité moyen (%)"
+    ) +
+    theme_minimal()
 ```
 
 **Interprétation**  
@@ -242,34 +239,54 @@ Nous examinons maintenant la diffusion de la GenAI selon le pays, en termes de n
 
 ### 3.1 Nombre d’entreprises et employés impactés par pays
 
-```{webr}
+```{r}
 # S'assurer que genai_clean existe
 ensure_genai_clean()
 
 country_summary <- genai_clean %>%
-  group_by(country) %>%
-  summarise(
-    n_companies      = n(),
-    total_employees  = sum(employees_imp, na.rm = TRUE),
-    mean_prod_change = mean(prod_change, na.rm = TRUE)
-  ) %>%
-  arrange(desc(n_companies))
+    group_by(country) %>%
+    summarise(
+        n_companies      = n(),
+        total_employees  = sum(employees_imp, na.rm = TRUE),
+        mean_prod_change = mean(prod_change, na.rm = TRUE)
+    ) %>%
+    arrange(desc(n_companies))
 
 country_summary
 ```
 
-```{webr}
-ggplot(country_summary,
-       aes(x = fct_reorder(country, n_companies),
-           y = n_companies)) +
-  geom_col(fill = "#2ca02c") +
-  coord_flip() +
-  labs(
-    title = "Nombre d'entreprises utilisant la GenAI par pays",
-    x = "Pays",
-    y = "Nombre d'entreprises"
-  ) +
-  theme_minimal()
+```{r}
+ggplot(
+    country_summary,
+    aes(
+        x = fct_reorder(country, n_companies),
+        y = n_companies
+    )
+) +
+    geom_col(fill = "#2ca02c") +
+    coord_flip() +
+    labs(
+        title = "Nombre d'entreprises utilisant la GenAI par pays",
+        x = "Pays",
+        y = "Nombre d'entreprises"
+    ) +
+    theme_minimal()
+
+ggplot(
+    country_summary,
+    aes(
+        x = fct_reorder(country, total_employees),
+        y = total_employees
+    )
+) +
+    geom_col(fill = "#ed7d31") +
+    coord_flip() +
+    labs(
+        title = "Nombre total d'employés impactés par pays",
+        x = "Pays",
+        y = "Nombre total d'employés"
+    ) +
+    theme_minimal()
 ```
 
 **Interprétation**  
@@ -277,18 +294,22 @@ Les pays avec le plus grand nombre d'entreprises dans ce graphique apparaissent 
 
 ### 3.2 Productivité moyenne par pays
 
-```{webr}
-ggplot(country_summary,
-       aes(x = fct_reorder(country, mean_prod_change),
-           y = mean_prod_change)) +
-  geom_col(fill = "#9467bd") +
-  coord_flip() +
-  labs(
-    title = "Changement de productivité moyen par pays",
-    x = "Pays",
-    y = "Productivité moyenne (%)"
-  ) +
-  theme_minimal()
+```{r}
+ggplot(
+    country_summary,
+    aes(
+        x = fct_reorder(country, mean_prod_change),
+        y = mean_prod_change
+    )
+) +
+    geom_col(fill = "#9467bd") +
+    coord_flip() +
+    labs(
+        title = "Changement de productivité moyen par pays",
+        x = "Pays",
+        y = "Productivité moyenne (%)"
+    ) +
+    theme_minimal()
 ```
 
 **Interprétation**  
@@ -302,35 +323,71 @@ Les secteurs d'activité jouent un rôle clé dans la façon dont la GenAI trans
 
 ### 4.1 Nombre d’entreprises et employés impactés par secteur
 
-```{webr}
+```{r}
 # S'assurer que genai_clean existe
 ensure_genai_clean()
 
 industry_summary <- genai_clean %>%
-  group_by(industry) %>%
-  summarise(
-    n_companies      = n(),
-    total_employees  = sum(employees_imp, na.rm = TRUE),
-    total_new_roles  = sum(new_roles, na.rm = TRUE),
-    mean_prod_change = mean(prod_change, na.rm = TRUE)
-  ) %>%
-  arrange(desc(total_employees))
+    group_by(industry) %>%
+    summarise(
+        n_companies      = n(),
+        total_employees  = sum(employees_imp, na.rm = TRUE),
+        total_new_roles  = sum(new_roles, na.rm = TRUE),
+        mean_prod_change = mean(prod_change, na.rm = TRUE)
+    ) %>%
+    arrange(desc(total_employees))
 
 industry_summary
 ```
 
-```{webr}
-ggplot(industry_summary,
-       aes(x = fct_reorder(industry, total_employees),
-           y = total_employees)) +
-  geom_col(fill = "#ff7f0e") +
-  coord_flip() +
-  labs(
-    title = "Nombre d'employés impactés par secteur",
-    x = "Secteur d'activité",
-    y = "Nombre d'employés impactés"
-  ) +
-  theme_minimal()
+```{r}
+ggplot(
+    industry_summary,
+    aes(
+        x = fct_reorder(industry, total_employees),
+        y = total_employees
+    )
+) +
+    geom_col(fill = "#ff7f0e") +
+    coord_flip() +
+    labs(
+        title = "Nombre d'employés impactés par secteur",
+        x = "Secteur d'activité",
+        y = "Nombre d'employés impactés"
+    ) +
+    theme_minimal()
+
+ggplot(
+    industry_summary,
+    aes(
+        x = fct_reorder(industry, n_companies),
+        y = n_companies
+    )
+) +
+    geom_col(fill = "#4472c4") +
+    coord_flip() +
+    labs(
+        title = "Nombre d'entreprises utilisant la GenAI par secteur",
+        x = "Secteur d'activité",
+        y = "Nombre d'entreprises"
+    ) +
+    theme_minimal()
+
+ggplot(
+    industry_summary,
+    aes(
+        x = fct_reorder(industry, mean_prod_change),
+        y = mean_prod_change
+    )
+) +
+    geom_col(fill = "#70ad47") +
+    coord_flip() +
+    labs(
+        title = "Changement de productivité moyen par secteur",
+        x = "Secteur d'activité",
+        y = "Productivité moyenne (%)"
+    ) +
+    theme_minimal()
 ```
 
 **Interprétation**  
@@ -338,18 +395,22 @@ Les secteurs qui concentrent le plus grand nombre d'employés impactés sont ceu
 
 ### 4.2 Nouveaux rôles créés par secteur
 
-```{webr}
-ggplot(industry_summary,
-       aes(x = fct_reorder(industry, total_new_roles),
-           y = total_new_roles)) +
-  geom_col(fill = "#8c564b") +
-  coord_flip() +
-  labs(
-    title = "Nouveaux rôles créés liés à la GenAI par secteur",
-    x = "Secteur d'activité",
-    y = "Nombre de nouveaux rôles"
-  ) +
-  theme_minimal()
+```{r}
+ggplot(
+    industry_summary,
+    aes(
+        x = fct_reorder(industry, total_new_roles),
+        y = total_new_roles
+    )
+) +
+    geom_col(fill = "#8c564b") +
+    coord_flip() +
+    labs(
+        title = "Nouveaux rôles créés liés à la GenAI par secteur",
+        x = "Secteur d'activité",
+        y = "Nombre de nouveaux rôles"
+    ) +
+    theme_minimal()
 ```
 
 **Interprétation**  
@@ -363,34 +424,54 @@ Toutes les entreprises ne choisissent pas le même outil. Cette section compare 
 
 ### 5.1 Répartition des entreprises par outil
 
-```{webr}
+```{r}
 # S'assurer que genai_clean existe
 ensure_genai_clean()
 
 tool_summary <- genai_clean %>%
-  group_by(tool) %>%
-  summarise(
-    n_companies      = n(),
-    total_employees  = sum(employees_imp, na.rm = TRUE),
-    mean_prod_change = mean(prod_change, na.rm = TRUE)
-  ) %>%
-  arrange(desc(n_companies))
+    group_by(tool) %>%
+    summarise(
+        n_companies      = n(),
+        total_employees  = sum(employees_imp, na.rm = TRUE),
+        mean_prod_change = mean(prod_change, na.rm = TRUE)
+    ) %>%
+    arrange(desc(n_companies))
 
 tool_summary
 ```
 
-```{webr}
-ggplot(tool_summary,
-       aes(x = fct_reorder(tool, n_companies),
-           y = n_companies)) +
-  geom_col(fill = "#17becf") +
-  coord_flip() +
-  labs(
-    title = "Répartition des entreprises par outil GenAI / LLM",
-    x = "Outil GenAI / LLM",
-    y = "Nombre d'entreprises"
-  ) +
-  theme_minimal()
+```{r}
+ggplot(
+    tool_summary,
+    aes(
+        x = fct_reorder(tool, n_companies),
+        y = n_companies
+    )
+) +
+    geom_col(fill = "#17becf") +
+    coord_flip() +
+    labs(
+        title = "Répartition des entreprises par outil GenAI / LLM",
+        x = "Outil GenAI / LLM",
+        y = "Nombre d'entreprises"
+    ) +
+    theme_minimal()
+
+ggplot(
+    tool_summary,
+    aes(
+        x = fct_reorder(tool, total_employees),
+        y = total_employees
+    )
+) +
+    geom_col(fill = "#ffc000") +
+    coord_flip() +
+    labs(
+        title = "Nombre total d'employés impactés par outil GenAI / LLM",
+        x = "Outil GenAI / LLM",
+        y = "Nombre total d'employés"
+    ) +
+    theme_minimal()
 ```
 
 **Interprétation**  
@@ -398,18 +479,22 @@ Les outils les plus fréquemment déclarés dans ce graphique sont ceux qui se s
 
 ### 5.2 Productivité moyenne par outil
 
-```{webr}
-ggplot(tool_summary,
-       aes(x = fct_reorder(tool, mean_prod_change),
-           y = mean_prod_change)) +
-  geom_col(fill = "#bcbd22") +
-  coord_flip() +
-  labs(
-    title = "Changement de productivité moyen par outil GenAI / LLM",
-    x = "Outil GenAI / LLM",
-    y = "Productivité moyenne (%)"
-  ) +
-  theme_minimal()
+```{r}
+ggplot(
+    tool_summary,
+    aes(
+        x = fct_reorder(tool, mean_prod_change),
+        y = mean_prod_change
+    )
+) +
+    geom_col(fill = "#bcbd22") +
+    coord_flip() +
+    labs(
+        title = "Changement de productivité moyen par outil GenAI / LLM",
+        x = "Outil GenAI / LLM",
+        y = "Productivité moyenne (%)"
+    ) +
+    theme_minimal()
 ```
 
 **Interprétation**  
@@ -424,39 +509,41 @@ Comme le jeu de données ne contient pas d'intitulé de poste détaillé, nous a
 - le nombre d'**employés impactés** (`employees_imp`),
 - le nombre de **nouveaux rôles créés** (`new_roles`).
 
-```{webr}
+```{r}
 # S'assurer que genai_clean existe
 ensure_genai_clean()
 
 country_industry <- genai_clean %>%
-  group_by(country, industry) %>%
-  summarise(
-    n_companies     = n(),
-    employees_total = sum(employees_imp, na.rm = TRUE),
-    new_roles_total = sum(new_roles, na.rm = TRUE),
-    .groups = "drop"
-  )
+    group_by(country, industry) %>%
+    summarise(
+        n_companies = n(),
+        employees_total = sum(employees_imp, na.rm = TRUE),
+        new_roles_total = sum(new_roles, na.rm = TRUE),
+        .groups = "drop"
+    )
 
 head(country_industry)
 ```
 
-```{webr}
+```{r}
 # Heatmap employés impactés par pays x secteur (quartile supérieur)
 top_ci <- country_industry %>%
-  filter(employees_total > quantile(employees_total, 0.75))
+    filter(employees_total > quantile(employees_total, 0.75))
 
 if (nrow(top_ci) > 0) {
-  ggplot(top_ci,
-         aes(x = country, y = industry, fill = employees_total)) +
-    geom_tile(color = "white") +
-    scale_fill_viridis_c() +
-    labs(
-      title = "Employés impactés par pays et secteur (quartile supérieur)",
-      x = "Pays",
-      y = "Secteur d'activité",
-      fill = "Employés impactés"
+    ggplot(
+        top_ci,
+        aes(x = country, y = industry, fill = employees_total)
     ) +
-    theme_minimal()
+        geom_tile(color = "white") +
+        scale_fill_viridis_c() +
+        labs(
+            title = "Employés impactés par pays et secteur (quartile supérieur)",
+            x = "Pays",
+            y = "Secteur d'activité",
+            fill = "Employés impactés"
+        ) +
+        theme_minimal()
 }
 ```
 
@@ -469,21 +556,31 @@ Cette heatmap met en avant les combinaisons pays × secteur où le nombre d'empl
 
 Enfin, nous examinons de manière simple la perception des salariés à travers la variable textuelle `Employee Sentiment`, en comptant quelques mots-clés illustrant inquiétude et enthousiasme.
 
-```{webr}
+```{r}
 # S'assurer que genai_clean existe
 ensure_genai_clean()
 
 # Exemple simple : compter quelques mots-clés dans les commentaires
 sentiment_keywords <- c("anxiety", "concern", "love", "exciting", "uncertain", "fun")
 
-for (kw in sentiment_keywords) {
-  cat("\nMot-clé:", kw, "\n")
-  print(
-    genai_clean %>%
-      filter(str_detect(str_to_lower(sentiment), kw)) %>%
-      summarise(n = n())
-  )
+# Visualisation des mots-clés de sentiment
+sentiment_counts <- data.frame(keyword = sentiment_keywords, n = 0)
+for (i in seq_along(sentiment_keywords)) {
+    kw <- sentiment_keywords[i]
+    sentiment_counts$n[i] <- genai_clean %>%
+        filter(str_detect(str_to_lower(sentiment), kw)) %>%
+        nrow()
 }
+
+ggplot(sentiment_counts, aes(x = fct_reorder(keyword, n), y = n, fill = keyword)) +
+    geom_col(show.legend = FALSE) +
+    coord_flip() +
+    labs(
+        title = "Fréquence des mots-clés dans les commentaires de sentiment",
+        x = "Mot-clé",
+        y = "Nombre d'entreprises"
+    ) +
+    theme_minimal()
 ```
 
 **Interprétation**  
