@@ -1,0 +1,715 @@
+[
+  {
+    "objectID": "qmd/test_stat.html#statistical-testing-framework",
+    "href": "qmd/test_stat.html#statistical-testing-framework",
+    "title": "Statistical Tests with R - Complete Guide",
+    "section": "Statistical Testing Framework",
+    "text": "Statistical Testing Framework"
+  },
+  {
+    "objectID": "qmd/test_stat.html#one-sample-t-test",
+    "href": "qmd/test_stat.html#one-sample-t-test",
+    "title": "Statistical Tests with R - Complete Guide",
+    "section": "One Sample t-Test",
+    "text": "One Sample t-Test\nMathematical Foundation\nTests whether population mean \\(\\mu\\) equals specified value \\(\\mu_0\\):\nTest statistic: \\(t = \\dfrac{\\bar{x} - \\mu_0}{s/\\sqrt{n}}\\)\nwhere:\n\n\n\n\\(\\bar{x}\\)\n\n\nsample mean\n\n\n\n\n\\(s\\)\n\n\nsample standard deviation\n\n\n\n\n\\(n\\)\n\n\nsample size\n\n\n\n\n\\(df = n - 1\\)\n\n\ndegrees of freedom\n\n\n\n\n\n\nData are normally distributed\n\n\n\n\n\n\nObservations are independent"
+  },
+  {
+    "objectID": "qmd/test_stat.html#two-sample-t-test",
+    "href": "qmd/test_stat.html#two-sample-t-test",
+    "title": "Statistical Tests with R - Complete Guide",
+    "section": "Two Sample t-Test",
+    "text": "Two Sample t-Test\nIndependent Samples t-Test\nTests whether two population means are equal:\nTest statistic: \\[t = \\frac{\\bar{x}_1 - \\bar{x}_2}{s_p \\sqrt{\\frac{1}{n_1} + \\frac{1}{n_2}}}\\]\nPooled standard deviation: \\[s_p = \\sqrt{\\frac{(n_1-1)s_1^2 + (n_2-1)s_2^2}{n_1 + n_2 - 2}}\\]\nDegrees of freedom: \\(df = n_1 + n_2 - 2\\)"
+  },
+  {
+    "objectID": "qmd/test_stat.html#paired-t-test",
+    "href": "qmd/test_stat.html#paired-t-test",
+    "title": "Statistical Tests with R - Complete Guide",
+    "section": "Paired t-Test",
+    "text": "Paired t-Test\nMathematical Formulation\nTests mean difference between paired observations:\nTest statistic: \\(t = \\dfrac{\\bar{d}}{s_d/\\sqrt{n}}\\)\nwhere:\n\n\n\n\\(d_i = x_{i1} - x_{i2}\\)\n\n\npaired differences\n\n\n\n\n\\(\\bar{d}\\)\n\n\nmean of differences\n\n\n\n\n\\(s_d\\)\n\n\nstandard deviation of differences\n\n\n\n\n\\(n\\)\n\n\nnumber of pairs\n\n\n\n\n\\(df = n - 1\\)\n\n\ndegrees of freedom\n\n\n\n\n\n\nDifferences are normally distributed\n\n\n\n\n\n\nPairs are dependent/related"
+  },
+  {
+    "objectID": "qmd/test_stat.html#effect-size-measures",
+    "href": "qmd/test_stat.html#effect-size-measures",
+    "title": "Statistical Tests with R - Complete Guide",
+    "section": "Effect Size Measures",
+    "text": "Effect Size Measures\nCohen’s d\nStandardized mean difference:\nFor one sample: \\(d = \\frac{\\bar{x} - \\mu_0}{s}\\)\nFor two independent samples: \\(d = \\frac{\\bar{x}_1 - \\bar{x}_2}{s_p}\\)\n\n\n\n\\(s_p\\)\n\n\npooled standard deviation\n\n\n\n\n0.2\n\n\nSmall effect\n\n\n\n\n0.5\n\n\nMedium effect\n\n\n\n\n0.8\n\n\nLarge effect"
+  },
+  {
+    "objectID": "qmd/test_stat.html#non-parametric-tests",
+    "href": "qmd/test_stat.html#non-parametric-tests",
+    "title": "Statistical Tests with R - Complete Guide",
+    "section": "Non-Parametric Tests",
+    "text": "Non-Parametric Tests\nMann-Whitney U Test (Wilcoxon Rank-Sum)\nNon-parametric alternative to two-sample t-test:\nTest statistic: \\[U = \\min(U_1, U_2)\\] where: \\[U_1 = n_1n_2 + \\frac{n_1(n_1+1)}{2} - R_1\\] \\[U_2 = n_1n_2 + \\frac{n_2(n_2+1)}{2} - R_2\\]\n\n\\(R_1, R_2\\) = sum of ranks for groups 1 and 2\nTests whether distributions differ in location"
+  },
+  {
+    "objectID": "qmd/test_stat.html#chi-square-tests",
+    "href": "qmd/test_stat.html#chi-square-tests",
+    "title": "Statistical Tests with R - Complete Guide",
+    "section": "Chi-Square Tests",
+    "text": "Chi-Square Tests\nChi-Square Goodness of Fit Test\nTests whether observed frequencies match expected distribution:\nTest statistic: \\[\\chi^2 = \\sum \\frac{(O_i - E_i)^2}{E_i}\\]\nwhere:\n\n\n\n\\(O_i\\)\n\n\nobserved frequency in category i\n\n\n\n\n\\(E_i\\)\n\n\nexpected frequency in category i\n\n\n\n\n\\(df\\)\n\n\n\\(k - 1\\)\n\n\n\n\n\\(k\\)\n\n\n# where k = number of categories"
+  },
+  {
+    "objectID": "qmd/test_stat.html#fishers-exact-test",
+    "href": "qmd/test_stat.html#fishers-exact-test",
+    "title": "Statistical Tests with R - Complete Guide",
+    "section": "Fisher’s Exact Test",
+    "text": "Fisher’s Exact Test\nMathematical Basis\nExact test for 2×2 contingency tables:\nProbability of observed configuration: \\[p = \\frac{\\binom{a+b}{a} \\binom{c+d}{c} \\binom{a+c}{a} \\binom{b+d}{b}}{\\binom{n}{a+b}}\\]\nwhere the table is:\n         | Col1 | Col2 | Total\nRow1     |  a   |  b   | a+b\nRow2     |  c   |  d   | c+d\nTotal    | a+c  | b+d  | n\nUse when: Expected frequencies &lt; 5 or small sample sizes"
+  },
+  {
+    "objectID": "qmd/test_stat.html#anova-analysis-of-variance",
+    "href": "qmd/test_stat.html#anova-analysis-of-variance",
+    "title": "Statistical Tests with R - Complete Guide",
+    "section": "ANOVA (Analysis of Variance)",
+    "text": "ANOVA (Analysis of Variance)\nOne-Way ANOVA\nTests equality of means across 3+ groups:\nF-statistic: \\(F = \\frac{MS_{B}}{MS_{W}}\\)\nwhere:\n\n\n\nMSB\n\n\n\\(MS_B = \\frac{SS_B}{df_B}\\)\n\n\n\\(df_{B} = k - 1\\)\n\n\n\n\nMSW\n\n\n\\(MS_W = \\frac{SS_W}{df_W}\\)\n\n\n\\(df_{W} = N - k\\)\n\n\n\n\nSSB\n\n\n\\(SS_B = \\sum n_i(\\bar{x}_i - \\bar{x})^2\\)\n\n\n\n\n\n\nSSW\n\n\n\\(SS_W = \\sum \\sum (x_{ij} - \\bar{x}_i)^2\\)\n\n\n\n\n\n\nB = Between\nW = Within"
+  },
+  {
+    "objectID": "qmd/test_stat.html#assumption-checking",
+    "href": "qmd/test_stat.html#assumption-checking",
+    "title": "Statistical Tests with R - Complete Guide",
+    "section": "Assumption Checking",
+    "text": "Assumption Checking\nNormality Tests"
+  },
+  {
+    "objectID": "qmd/test_stat.html#power-analysis",
+    "href": "qmd/test_stat.html#power-analysis",
+    "title": "Statistical Tests with R - Complete Guide",
+    "section": "Power Analysis",
+    "text": "Power Analysis\nSample Size Calculation\nFor t-test: \\[n = \\left( \\frac{(z_{1-\\alpha/2} + z_{1-\\beta}) \\cdot \\sigma}{\\delta} \\right)^2\\]\nwhere:\n\n\n\n\\(\\alpha\\)\n\n\nsig. level\n\n\n\n\n\\(\\beta\\)\n\n\nType II error rate\n\n\n\n\n\\(1-\\beta\\)\n\n\npower\n\n\n\n\n\\(\\delta\\)\n\n\neffect size\n\n\n\n\n\\(\\sigma\\)\n\n\nstandard deviation"
+  },
+  {
+    "objectID": "qmd/test_stat.html#summary-table-of-tests",
+    "href": "qmd/test_stat.html#summary-table-of-tests",
+    "title": "Statistical Tests with R - Complete Guide",
+    "section": "Summary Table of Tests",
+    "text": "Summary Table of Tests\n\n\n\n\n\n\n\n\n\nTest\nPurpose\nR Function\nKey Assumptions\n\n\n\n\nOne-sample t-test\nCompare mean to value\nt.test(x, mu)\nNormality, independence\n\n\nTwo-sample t-test\nCompare two means\nt.test(x, y)\nNormality, equal variances*\n\n\nPaired t-test\nCompare paired means\nt.test(x, y, paired=TRUE)\nNormality of differences\n\n\nMann-Whitney\nNon-parametric two samples\nwilcox.test(x, y)\nIndependent samples\n\n\nWilcoxon signed-rank\nNon-parametric paired\nwilcox.test(x, y, paired=TRUE)\nPaired data\n\n\nChi-square\nCategorical association\nchisq.test(table)\nExpected frequencies ≥ 5\n\n\nFisher’s exact\nSmall contingency tables\nfisher.test(table)\nFixed margins\n\n\nANOVA\nCompare 3+ means\naov(y ~ group)\nNormality, equal variances\n\n\n\n*Welch’s t-test doesn’t assume equal variances"
+  },
+  {
+    "objectID": "qmd/test_stat.html#best-practices",
+    "href": "qmd/test_stat.html#best-practices",
+    "title": "Statistical Tests with R - Complete Guide",
+    "section": "Best Practices",
+    "text": "Best Practices\n\nAlways check assumptions before interpreting results\nUse non-parametric tests when assumptions are violated\nReport effect sizes along with p-values\nConsider multiple testing corrections when appropriate\nUse confidence intervals to understand precision\nVisualize your data before running tests"
+  },
+  {
+    "objectID": "qmd/enterprise_genai_analysis.html#introduction-de-lanalyse",
+    "href": "qmd/enterprise_genai_analysis.html#introduction-de-lanalyse",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "\n1 Introduction de l’analyse",
+    "text": "1 Introduction de l’analyse\nLa diffusion récente des modèles de langage (LLMs) et des outils de génération de contenu (GenAI) transforme rapidement les organisations : nouveaux cas d’usage, réallocation des tâches, création de rôles spécialisés, mais aussi inquiétudes sur l’avenir de certains métiers.\nDans ce document, nous proposons une analyse descriptive de cette adoption en entreprise, en mettant l’accent sur :\n\nl’émergence temporelle de la GenAI (années d’adoption),\nles différences entre pays et entre secteurs d’activité,\nl’ampleur de l’impact sur la main-d’œuvre (employés impactés, nouveaux rôles, formation),\net la perception des salariés à travers des commentaires textuels.",
+    "crumbs": [
+      "Projects",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/enterprise_genai_analysis.html#contexte-et-source-des-données",
+    "href": "qmd/enterprise_genai_analysis.html#contexte-et-source-des-données",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "\n2 Contexte et source des données",
+    "text": "2 Contexte et source des données\nCette analyse s’appuie sur le jeu de données “Enterprise GenAI Adoption & Workforce Impact” publié sur Kaggle.\n\nAuteur du dataset : utilisateur Kaggle tfisthis\n\nRessource originale : Enterprise GenAI Adoption & Workforce Impact Data\n\nUnité d’observation : une entreprise\nVariables principales :\n\n\nCompany Name : nom de l’entreprise\n\nIndustry : secteur d’activité (Technology, Healthcare, Finance, etc.)\n\nCountry : pays de l’entreprise\n\nGenAI Tool : outil GenAI / LLM principalement utilisé (ChatGPT, Gemini, Claude, LLaMA, Mixtral, Groq, etc.)\n\nAdoption Year : année d’adoption de l’outil\n\nNumber of Employees Impacted : nombre d’employés dont le travail est affecté par la GenAI\n\nNew Roles Created : nombre de nouveaux rôles créés liés à la GenAI\n\nTraining Hours Provided : volume d’heures de formation dispensées\n\nProductivity Change (%) : variation estimée de la productivité (en pourcentage)\n\nEmployee Sentiment : commentaire qualitatif sur la perception des employés\n\n\n\nLe jeu de données comprend 100 000 entreprises au total, ce qui permet d’obtenir des agrégations stables par année, pays et secteur dans ce cadre simulé.\nL’objectif de cette analyse est de décrire l’émergence et l’utilisation des outils GenAI / LLMs en entreprise selon :\n\nle temps (année d’adoption),\nle pays,\nle secteur d’activité,\net l’ampleur de l’impact sur les métiers (employés impactés, nouveaux rôles, sentiment).\n\n\nShow code# Chargement des packages (sans utiliser le méta-package tidyverse)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(readr)\nlibrary(stringr)\nlibrary(forcats)\n\n# Helper : (re)charger les données et préparer genai_clean\nensure_genai_clean &lt;- function() {\n    # Si les données nettoyées existent déjà dans l'environnement courant, ne rien refaire\n    if (exists(\"genai_clean\")) {\n        return(invisible(genai_clean))\n    }\n\n    # Détecter si l'on est dans l'environnement webR (prévisualisation Quarto)\n    is_webr_env &lt;- grepl(\"/home/web_user\", getwd())\n\n    if (is_webr_env) {\n        # En webR, on lit le fichier via une URL HTTP hébergée sur le site GitHub Pages\n        data_url &lt;- \"https://raw.githubusercontent.com/MoniaSellaoui/Adoption-des-outils-GenAI-LLMs-en-entreprise/master/qmd/data/enterprise_genai_data.csv\"\n        local_path &lt;- \"enterprise_genai_data.csv\"\n\n        if (!file.exists(local_path)) {\n            ok &lt;- FALSE\n            try(\n                {\n                    download.file(data_url, destfile = local_path, quiet = TRUE)\n                    ok &lt;- file.exists(local_path)\n                },\n                silent = TRUE\n            )\n\n            if (!ok) {\n                stop(paste0(\n                    \"Impossible de télécharger 'enterprise_genai_data.csv' depuis \", data_url, \". \",\n                    \"Assure-toi que le site est publié et que le fichier est bien accessible à cette URL.\"\n                ))\n            }\n        }\n\n        data_path &lt;- local_path\n    } else {\n        # En rendu local (R standard), on lit directement le fichier dans le dépôt\n        candidates &lt;- c(\n            \"qmd/data/enterprise_genai_data.csv\", # rendu depuis la racine du projet\n            \"data/enterprise_genai_data.csv\", # rendu depuis le dossier qmd/\n            \"enterprise_genai_data.csv\", # rendu depuis le dossier data/\n            \"../qmd/data/enterprise_genai_data.csv\" # rendu depuis un sous-dossier éventuel\n        )\n\n        data_path &lt;- NULL\n        for (p in candidates) {\n            if (file.exists(p)) {\n                data_path &lt;- p\n                break\n            }\n        }\n\n        if (is.null(data_path)) {\n            stop(paste0(\n                \"Le fichier 'enterprise_genai_data.csv' est introuvable dans les emplacements attendus. \",\n                \"Répertoires testés (relatifs à getwd()='\", getwd(), \"') : \",\n                paste(candidates, collapse = \", \"), \".\"\n            ))\n        }\n    }\n\n    # Chargement brut\n    genai &lt;&lt;- readr::read_csv(data_path, show_col_types = FALSE)\n\n    # Nettoyage / renommage des colonnes\n    genai_clean &lt;&lt;- genai %&gt;%\n        dplyr::rename(\n            company           = `Company Name`,\n            industry          = Industry,\n            country           = Country,\n            tool              = `GenAI Tool`,\n            adoption_year     = `Adoption Year`,\n            employees_imp     = `Number of Employees Impacted`,\n            new_roles         = `New Roles Created`,\n            training_hours    = `Training Hours Provided`,\n            prod_change       = `Productivity Change (%)`,\n            sentiment         = `Employee Sentiment`\n        )\n\n    invisible(genai_clean)\n}\n\n# Charger une première fois les données au démarrage du document\nensure_genai_clean()",
+    "crumbs": [
+      "Projects",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/enterprise_genai_analysis.html#description-des-données",
+    "href": "qmd/enterprise_genai_analysis.html#description-des-données",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "\n3 1. Description des données",
+    "text": "3 1. Description des données\nDans cette première partie, nous explorons la structure du jeu de données et les principales variables afin de vérifier qu’elles sont cohérentes avec notre problématique (pays, secteurs, outils GenAI et indicateurs d’impact sur la main-d’œuvre).\n\nShow code# Appeler le helper pour s'assurer que genai_clean est prêt\nensure_genai_clean()\n\nsummary(genai_clean)\n\n\n\n3.1 Aperçu des premières lignes\n\nShow codehead(genai_clean, 10)\n\n\nInterprétation (description des données)\nChaque ligne du tableau correspond à une entreprise. On y retrouve son pays, son secteur d’activité, l’outil GenAI principal utilisé, l’année d’adoption et plusieurs indicateurs d’impact : nombre d’employés concernés, nouveaux rôles créés, heures de formation et changement de productivité estimé. La colonne Employee Sentiment fournit un commentaire libre permettant une lecture plus qualitative des effets ressentis par les salariés.",
+    "crumbs": [
+      "Projects",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/enterprise_genai_analysis.html#émergence-temporelle-des-outils-genai-llms",
+    "href": "qmd/enterprise_genai_analysis.html#émergence-temporelle-des-outils-genai-llms",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "\n4 2. Émergence temporelle des outils GenAI / LLMs",
+    "text": "4 2. Émergence temporelle des outils GenAI / LLMs\n\n4.1 2.1 Nombre d’entreprises par année d’adoption\nNous commençons par observer à quel rythme les entreprises adoptent les outils GenAI/LLMs en fonction du temps.\n\nShow code# S'assurer que genai_clean existe\nensure_genai_clean()\n\nadoption_by_year &lt;- genai_clean %&gt;%\n    count(adoption_year)\n\nadoption_by_year\n\n\n\nShow codeggplot(adoption_by_year, aes(x = factor(adoption_year), y = n)) +\n    geom_col(fill = \"#1f77b4\") +\n    labs(\n        title = \"Nombre d'entreprises ayant adopté la GenAI par année\",\n        x = \"Année d'adoption\",\n        y = \"Nombre d'entreprises\"\n    ) +\n    theme_minimal()\n\n\n\n\n\n\n\nInterprétation\nOn visualise ici le nombre d’entreprises qui déclarent avoir adopté la GenAI pour chaque année. Dans ce jeu de données, on compte 33 180 entreprises adoptantes en 2022, 33 344 en 2023 et 33 476 en 2024, soit une concentration exclusive sur la période 2022–2024 qui reflète une adoption très récente et continue.\n\n4.2 2.2 Évolution de la productivité moyenne par année\n\nShow code# S'assurer que genai_clean existe\nensure_genai_clean()\n\nprod_by_year &lt;- genai_clean %&gt;%\n    group_by(adoption_year) %&gt;%\n    summarise(\n        mean_prod_change = mean(prod_change, na.rm = TRUE),\n        n = n()\n    ) %&gt;%\n    arrange(adoption_year)\n\nprod_by_year\n\n\n\nShow codeggplot(genai_clean, aes(x = factor(adoption_year), y = prod_change, fill = factor(adoption_year))) +\n    geom_boxplot(alpha = 0.7, show.legend = FALSE) +\n    labs(\n        title = \"Distribution de la productivité par année d'adoption\",\n        x = \"Année d'adoption\",\n        y = \"Changement de productivité (%)\"\n    ) +\n    theme_minimal()\n\n\n\n\n\n\nShow codeggplot(prod_by_year, aes(x = adoption_year, y = mean_prod_change)) +\n    geom_line(color = \"#d62728\", size = 1.2) +\n    geom_point(color = \"#d62728\", size = 3) +\n    scale_x_continuous(breaks = unique(prod_by_year$adoption_year)) +\n    expand_limits(y = 0) + # Forcer l'axe Y à partir de 0 pour éviter l'effet loupe\n    labs(\n        title = \"Évolution de la productivité moyenne\",\n        subtitle = \"Tendance par année d'adoption (échelle ajustée)\",\n        x = \"Année d'adoption\",\n        y = \"Productivité moyenne (%)\"\n    ) +\n    theme_minimal()\n\n\n\n\n\n\n\nInterprétation\nCette section met en perspective la distribution (boxplots) et la moyenne (courbe rouge) des gains de productivité :\n\n\nDistribution (Boxplots) : On observe une dispersion similaire des gains de productivité pour chaque année d’adoption, indiquant que la variabilité de l’impact reste constante.\n\nTendance moyenne (Courbe rouge) : La ligne rouge trace l’évolution du gain moyen. On constate une stabilité remarquable autour de 18,5 % (18,5 % pour 2022, 18,4 % pour 2023 et 18,5 % pour 2024).\n\nCela suggère que l’impact positif de la GenAI sur la productivité est robuste et homogène dans le temps : les “premiers adoptants” ne bénéficient pas d’un avantage disproportionné par rapport aux suivants, et l’efficacité de la technologie ne semble pas s’essouffler sur cette courte période.",
+    "crumbs": [
+      "Projects",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/enterprise_genai_analysis.html#adoption-par-pays",
+    "href": "qmd/enterprise_genai_analysis.html#adoption-par-pays",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "\n5 3. Adoption par pays",
+    "text": "5 3. Adoption par pays\nNous examinons maintenant la diffusion de la GenAI selon le pays, en termes de nombre d’entreprises concernées, d’employés impactés et de gains de productivité moyens.\n\n5.1 3.1 Nombre d’entreprises et employés impactés par pays\n\nShow code# S'assurer que genai_clean existe\nensure_genai_clean()\n\ncountry_summary &lt;- genai_clean %&gt;%\n    group_by(country) %&gt;%\n    summarise(\n        n_companies      = n(),\n        total_employees  = sum(employees_imp, na.rm = TRUE),\n        mean_prod_change = mean(prod_change, na.rm = TRUE)\n    ) %&gt;%\n    arrange(desc(n_companies))\n\ncountry_summary\n\n\n\nShow codeggplot(\n    country_summary,\n    aes(\n        x = fct_reorder(country, n_companies),\n        y = n_companies\n    )\n) +\n    geom_col(fill = \"#2ca02c\") +\n    coord_flip() +\n    labs(\n        title = \"Nombre d'entreprises utilisant la GenAI par pays\",\n        x = \"Pays\",\n        y = \"Nombre d'entreprises\"\n    ) +\n    theme_minimal()\n\n\n\n\n\n\nShow codeggplot(\n    country_summary,\n    aes(\n        x = fct_reorder(country, total_employees),\n        y = total_employees\n    )\n) +\n    geom_col(fill = \"#ed7d31\") +\n    coord_flip() +\n    labs(\n        title = \"Nombre total d'employés impactés par pays\",\n        x = \"Pays\",\n        y = \"Nombre total d'employés\"\n    ) +\n    theme_minimal()\n\n\n\n\n\n\n\nInterprétation\nLes pays avec le plus grand nombre d’entreprises dans ce graphique apparaissent comme des pôles d’adoption rapide de la GenAI. Dans ce jeu de données, le podium par nombre d’entreprises comprend le Brésil (~7 322 entreprises), l’Australie (~7 255) et le Canada (~7 238), suivis de près par la Corée du Sud et les Émirats Arabes Unis. Ils combinent souvent un écosystème technologique développé et une pression concurrentielle forte pour automatiser et augmenter les tâches.\n\n5.2 3.2 Productivité moyenne par pays\n\nShow code#| results: hide\n\nggplot(genai_clean, aes(x = fct_reorder(country, prod_change), y = prod_change, fill = country)) +\n    geom_boxplot(alpha = 0.7, show.legend = FALSE) +\n    coord_flip() +\n    labs(\n        title = \"Distribution de la productivité par pays\",\n        x = \"Pays\",\n        y = \"Changement de productivité (%)\"\n    ) +\n    theme_minimal()\n\n\n\n\n\n\n\nInterprétation\nCe graphique compare le gain de productivité moyen entre pays. Des valeurs élevées indiquent des contextes où l’intégration de la GenAI s’accompagne d’une amélioration marquée des performances, même si cela ne dit rien sur les inégalités potentielles entre entreprises ou secteurs au sein d’un même pays.",
+    "crumbs": [
+      "Projects",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/enterprise_genai_analysis.html#adoption-par-secteur-dactivité-industries",
+    "href": "qmd/enterprise_genai_analysis.html#adoption-par-secteur-dactivité-industries",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "\n6 4. Adoption par secteur d’activité (industries)",
+    "text": "6 4. Adoption par secteur d’activité (industries)\nLes secteurs d’activité jouent un rôle clé dans la façon dont la GenAI transforme les métiers : certains sont très exposés (technologie, finance, services juridiques), d’autres l’utilisent de manière plus ciblée.\n\n6.1 4.1 Nombre d’entreprises et employés impactés par secteur\n\nShow code# S'assurer que genai_clean existe\nensure_genai_clean()\n\nindustry_summary &lt;- genai_clean %&gt;%\n    group_by(industry) %&gt;%\n    summarise(\n        n_companies      = n(),\n        total_employees  = sum(employees_imp, na.rm = TRUE),\n        total_new_roles  = sum(new_roles, na.rm = TRUE),\n        mean_prod_change = mean(prod_change, na.rm = TRUE)\n    ) %&gt;%\n    arrange(desc(total_employees))\n\nindustry_summary\n\n\n\nShow codeggplot(\n    industry_summary,\n    aes(\n        x = fct_reorder(industry, total_employees),\n        y = total_employees\n    )\n) +\n    geom_col(fill = \"#ff7f0e\") +\n    coord_flip() +\n    labs(\n        title = \"Nombre d'employés impactés par secteur\",\n        x = \"Secteur d'activité\",\n        y = \"Nombre d'employés impactés\"\n    ) +\n    theme_minimal()\n\n\n\n\n\n\nShow codeggplot(\n    industry_summary,\n    aes(\n        x = fct_reorder(industry, n_companies),\n        y = n_companies\n    )\n) +\n    geom_col(fill = \"#4472c4\") +\n    coord_flip() +\n    labs(\n        title = \"Nombre d'entreprises utilisant la GenAI par secteur\",\n        x = \"Secteur d'activité\",\n        y = \"Nombre d'entreprises\"\n    ) +\n    theme_minimal()\n\n\n\n\n\n\nShow codeggplot(\n    industry_summary,\n    aes(\n        x = fct_reorder(industry, mean_prod_change),\n        y = mean_prod_change\n    )\n) +\n    geom_col(fill = \"#70ad47\") +\n    coord_flip() +\n    labs(\n        title = \"Changement de productivité moyen par secteur\",\n        x = \"Secteur d'activité\",\n        y = \"Productivité moyenne (%)\"\n    ) +\n    theme_minimal()\n\n\n\n\n\n\n\nInterprétation\nLes secteurs qui concentrent le plus grand nombre d’employés impactés sont ceux où la GenAI modifie le plus massivement les tâches quotidiennes (par exemple génération de contenu, analyse de documents, support client, etc.). Dans ce dataset simulé, les secteurs Advertising, Defense, Education, Entertainment et Finance se situent en tête en termes d’employés impactés cumulés, ce qui en fait des “métiers” particulièrement exposés à court terme.\n\n6.2 4.2 Nouveaux rôles créés par secteur\n\nShow codeggplot(\n    industry_summary,\n    aes(\n        x = fct_reorder(industry, total_new_roles),\n        y = total_new_roles\n    )\n) +\n    geom_col(fill = \"#8c564b\") +\n    coord_flip() +\n    labs(\n        title = \"Nouveaux rôles créés liés à la GenAI par secteur\",\n        x = \"Secteur d'activité\",\n        y = \"Nombre de nouveaux rôles\"\n    ) +\n    theme_minimal()\n\n\n\n\n\n\n\nInterprétation\nIci, nous mettons en évidence les secteurs où la GenAI ne se traduit pas seulement par l’automatisation, mais aussi par la création de nouveaux rôles spécialisés (prompt engineer, data/AI specialist, référent GenAI, etc.). Un volume important de nouveaux rôles signale une reconfiguration profonde des compétences attendues.",
+    "crumbs": [
+      "Projects",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/enterprise_genai_analysis.html#adoption-par-outil-genai-llm",
+    "href": "qmd/enterprise_genai_analysis.html#adoption-par-outil-genai-llm",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "\n7 5. Adoption par outil GenAI / LLM",
+    "text": "7 5. Adoption par outil GenAI / LLM\nToutes les entreprises ne choisissent pas le même outil. Cette section compare les principaux LLMs et plateformes GenAI utilisés (ChatGPT, Gemini, Claude, LLaMA, Mixtral, Groq, etc.) en termes de diffusion et de gains de productivité.\n\n7.1 5.1 Répartition des entreprises par outil\n\nShow code# S'assurer que genai_clean existe\nensure_genai_clean()\n\ntool_summary &lt;- genai_clean %&gt;%\n    group_by(tool) %&gt;%\n    summarise(\n        n_companies      = n(),\n        total_employees  = sum(employees_imp, na.rm = TRUE),\n        mean_prod_change = mean(prod_change, na.rm = TRUE)\n    ) %&gt;%\n    arrange(desc(n_companies))\n\ntool_summary\n\n\n\nShow codeggplot(\n    tool_summary,\n    aes(\n        x = fct_reorder(tool, n_companies),\n        y = n_companies\n    )\n) +\n    geom_col(fill = \"#17becf\") +\n    coord_flip() +\n    labs(\n        title = \"Répartition des entreprises par outil GenAI / LLM\",\n        x = \"Outil GenAI / LLM\",\n        y = \"Nombre d'entreprises\"\n    ) +\n    theme_minimal()\n\n\n\n\n\n\nShow codeggplot(\n    tool_summary,\n    aes(\n        x = fct_reorder(tool, total_employees),\n        y = total_employees\n    )\n) +\n    geom_col(fill = \"#ffc000\") +\n    coord_flip() +\n    labs(\n        title = \"Nombre total d'employés impactés par outil GenAI / LLM\",\n        x = \"Outil GenAI / LLM\",\n        y = \"Nombre total d'employés\"\n    ) +\n    theme_minimal()\n\n\n\n\n\n\n\nInterprétation\nLes outils les plus fréquemment déclarés dans ce graphique sont ceux qui se sont imposés comme standards de fait pour les entreprises (par exemple pour le support, la rédaction assistée ou l’analyse de texte). Ici, les outils les plus répandus sont Gemini (~16 885 entreprises), Groq (~16 748), LLaMA (~16 676), Mixtral (~16 667), ChatGPT (~16 663) et Claude (~16 361), ce qui souligne un paysage concurrentiel relativement équilibré entre quelques grands acteurs.\n\n7.2 5.2 Productivité moyenne par outil\n\nShow codeggplot(genai_clean, aes(x = fct_reorder(tool, prod_change), y = prod_change, fill = tool)) +\n    geom_boxplot(alpha = 0.7, show.legend = FALSE) +\n    coord_flip() +\n    labs(\n        title = \"Distribution de la productivité par outil GenAI / LLM\",\n        x = \"Outil GenAI / LLM\",\n        y = \"Changement de productivité (%)\"\n    ) +\n    theme_minimal()\n\n\n\n\n\n\n\nInterprétation\nCe graphique compare les gains de productivité moyens associés à chaque outil. Il permet d’identifier les solutions qui, dans ce jeu de données, sont perçues comme apportant le plus de valeur ajoutée, tout en gardant à l’esprit que ces différences peuvent aussi refléter les contextes d’usage (types de tâches, niveau de maturité des équipes, etc.).",
+    "crumbs": [
+      "Projects",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/enterprise_genai_analysis.html#métiers-touchés-employés-impactés-et-nouveaux-rôles",
+    "href": "qmd/enterprise_genai_analysis.html#métiers-touchés-employés-impactés-et-nouveaux-rôles",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "\n8 6. Métiers touchés : employés impactés et nouveaux rôles",
+    "text": "8 6. Métiers touchés : employés impactés et nouveaux rôles\nComme le jeu de données ne contient pas d’intitulé de poste détaillé, nous approchons les “métiers” touchés via deux indicateurs :\n\nle nombre d’employés impactés (employees_imp),\nle nombre de nouveaux rôles créés (new_roles).\n\n\nShow code# S'assurer que genai_clean existe\nensure_genai_clean()\n\ncountry_industry &lt;- genai_clean %&gt;%\n    group_by(country, industry) %&gt;%\n    summarise(\n        n_companies = n(),\n        employees_total = sum(employees_imp, na.rm = TRUE),\n        new_roles_total = sum(new_roles, na.rm = TRUE),\n        .groups = \"drop\"\n    )\n\nhead(country_industry)\n\n\n\nShow code# Heatmap employés impactés par pays x secteur (quartile supérieur)\ntop_ci &lt;- country_industry %&gt;%\n    filter(employees_total &gt; quantile(employees_total, 0.75))\n\nif (nrow(top_ci) &gt; 0) {\n    ggplot(\n        top_ci,\n        aes(x = country, y = industry, fill = employees_total)\n    ) +\n        geom_tile(color = \"white\") +\n        scale_fill_viridis_c() +\n        labs(\n            title = \"Employés impactés par pays et secteur (quartile supérieur)\",\n            x = \"Pays\",\n            y = \"Secteur d'activité\",\n            fill = \"Employés impactés\"\n        ) +\n        theme_minimal() +\n        theme(axis.text.x = element_text(angle = 45, hjust = 1))\n}\n\n\n\n\n\n\n\nInterprétation\nCette heatmap met en avant les combinaisons pays × secteur où le nombre d’employés impactés est le plus élevé (quartile supérieur). Ce sont les endroits où la transformation des métiers est a priori la plus forte et la plus visible dans l’organisation.",
+    "crumbs": [
+      "Projects",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/enterprise_genai_analysis.html#sentiment-des-employés-face-à-la-genai",
+    "href": "qmd/enterprise_genai_analysis.html#sentiment-des-employés-face-à-la-genai",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "\n9 7. Sentiment des employés face à la GenAI",
+    "text": "9 7. Sentiment des employés face à la GenAI\nEnfin, nous examinons de manière simple la perception des salariés à travers la variable textuelle Employee Sentiment, en comptant quelques mots-clés illustrant inquiétude et enthousiasme.\n\nShow code# S'assurer que genai_clean existe\nensure_genai_clean()\n\n# Exemple simple : compter quelques mots-clés dans les commentaires\nsentiment_keywords &lt;- c(\"anxiety\", \"concern\", \"love\", \"exciting\", \"uncertain\", \"fun\")\n\n# Visualisation des mots-clés de sentiment\nsentiment_counts &lt;- data.frame(keyword = sentiment_keywords, n = 0)\nfor (i in seq_along(sentiment_keywords)) {\n    kw &lt;- sentiment_keywords[i]\n    sentiment_counts$n[i] &lt;- genai_clean %&gt;%\n        filter(str_detect(str_to_lower(sentiment), kw)) %&gt;%\n        nrow()\n}\n\nggplot(sentiment_counts, aes(x = fct_reorder(keyword, n), y = n, fill = keyword)) +\n    geom_col(show.legend = FALSE) +\n    coord_flip() +\n    labs(\n        title = \"Fréquence des mots-clés dans les commentaires de sentiment\",\n        x = \"Mot-clé\",\n        y = \"Nombre d'entreprises\"\n    ) +\n    theme_minimal()\n\n\n\n\n\n\n\nInterprétation\nOn observe généralement un mélange de termes associant la GenAI à des gains (“love”, “exciting”, “fun”) et à des craintes (“anxiety”, “concern”, “uncertain”). Cela illustre bien la tension entre les promesses d’augmentation de la productivité et les inquiétudes liées à la transformation ou à la disparition de certains rôles.",
+    "crumbs": [
+      "Projects",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/enterprise_genai_analysis.html#analyse-de-la-performance-par-outil-genai",
+    "href": "qmd/enterprise_genai_analysis.html#analyse-de-la-performance-par-outil-genai",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "\n10 8. Analyse de la performance par Outil GenAI",
+    "text": "10 8. Analyse de la performance par Outil GenAI\nPour aller au-delà de la simple description, nous testons ici statistiquement si certains outils sont significativement plus performants que d’autres en termes de gain de productivité.\n\n10.1 8.1 Comparaison des moyennes et Test ANOVA\nNous utilisons un test ANOVA (Analysis of Variance) pour vérifier l’hypothèse nulle : “Tous les outils apportent le même gain moyen de productivité”.\n\nShow code# S'assurer que les données sont chargées\nensure_genai_clean()\n\n# 1. Calcul des moyennes et intervalles de confiance par outil\ntool_performance &lt;- genai_clean %&gt;%\n    group_by(tool) %&gt;%\n    summarise(\n        mean_prod = mean(prod_change, na.rm = TRUE),\n        sd_prod   = sd(prod_change, na.rm = TRUE),\n        n         = n(),\n        se        = sd_prod / sqrt(n), # Erreur standard\n        ci_lower  = mean_prod - 1.96 * se,\n        ci_upper  = mean_prod + 1.96 * se\n    ) %&gt;%\n    arrange(desc(mean_prod))\n\n# 2. Test ANOVA\nanova_res &lt;- aov(prod_change ~ tool, data = genai_clean)\nanova_summary &lt;- summary(anova_res)\np_val_anova &lt;- anova_summary[[1]][[\"Pr(&gt;F)\"]][1]\n\n# Visualisation (Barplot avec barres d'erreur)\nggplot(tool_performance, aes(x = reorder(tool, mean_prod), y = mean_prod, fill = tool)) +\n    geom_col(alpha = 0.8, width = 0.7) +\n    geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.2, color = \"black\") +\n    geom_text(aes(label = round(mean_prod, 2)), vjust = -1.5, fontface = \"bold\") +\n    expand_limits(y = c(0, max(tool_performance$ci_upper) * 1.1)) +\n    labs(\n        title = \"Performance moyenne par Outil GenAI\",\n        subtitle = paste0(\"Comparaison avec intervalle de confiance à 95% (ANOVA p-value: \", format.pval(p_val_anova, digits = 3), \")\"),\n        x = \"Outil\",\n        y = \"Gain de productivité moyen (%)\"\n    ) +\n    theme_minimal() +\n    theme(legend.position = \"none\") +\n    coord_flip() # Plus lisible pour les noms d'outils\n\n\n\n\n\n\n\nInterprétation statistique : - Moyennes : Les outils présentent des scores de productivité extrêmement proches (tous autour de 18.4% - 18.5%). - Test ANOVA : La p-value est de 0.1590076. - Si elle est &lt; 0.05, il existe une différence significative entre au moins deux outils. - Si elle est &gt; 0.05, les différences observées sont dues au hasard et aucun outil n’est statistiquement supérieur aux autres.\nNote : Les barres d’erreur (segments noirs) représentent l’intervalle de confiance. Si elles se chevauchent largement, cela confirme visuellement l’absence de différence majeure.",
+    "crumbs": [
+      "Projects",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/enterprise_genai_analysis.html#conclusion",
+    "href": "qmd/enterprise_genai_analysis.html#conclusion",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "\n11 9. Conclusion",
+    "text": "11 9. Conclusion\n\nL’adoption des outils GenAI / LLMs en entreprise s’est fortement développée sur la période récente 2022–2024 (période couverte par le jeu de données).\nCertains pays et secteurs concentrent davantage d’entreprises et d’employés impactés, indiquant des transformations profondes des métiers.\nLa productivité moyenne est globalement en hausse après l’adoption, même si les retours des employés montrent un mélange d’enthousiasme et d’inquiétude.\nLes nouveaux rôles créés et le volume d’employés concernés suggèrent une reconfiguration importante des organisations et des compétences.",
+    "crumbs": [
+      "Projects",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/06-classical-tests.html#preface",
+    "href": "qmd/06-classical-tests.html#preface",
+    "title": "Classical Tests",
+    "section": "Preface",
+    "text": "Preface\nThe following exercises demonstrate some of the most common classical tests by means of simple examples."
+  },
+  {
+    "objectID": "qmd/06-classical-tests.html#a-sleep-duration-study-statistical-tests-of-location",
+    "href": "qmd/06-classical-tests.html#a-sleep-duration-study-statistical-tests-of-location",
+    "title": "Classical Tests",
+    "section": "A sleep duration study: statistical tests of location",
+    "text": "A sleep duration study: statistical tests of location\nThe example is inspired by a classical test data set (Student, 1908) about a study with two groups of persons treated with two different pharmaceutical drugs.\nDrug 1: 8.7, 6.4, 7.8, 6.8, 7.9, 11.4, 11.7, 8.8, 8, 10\nDrug 2: 9.9, 8.8, 9.1, 8.1, 7.9, 12.4, 13.5, 9.6, 12.6, 11.4\nThe data are the duration of sleeping time in hours. It is assumed that the normal sleeping time would be 8 hours."
+  },
+  {
+    "objectID": "qmd/06-classical-tests.html#one-sample-t-test",
+    "href": "qmd/06-classical-tests.html#one-sample-t-test",
+    "title": "Classical Tests",
+    "section": "One sample t-Test",
+    "text": "One sample t-Test\nLet’s test whether the drugs increased or decreased sleeping time, compared to 8 hours:\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
+  },
+  {
+    "objectID": "qmd/06-classical-tests.html#two-sample-t-test",
+    "href": "qmd/06-classical-tests.html#two-sample-t-test",
+    "title": "Classical Tests",
+    "section": "Two sample t-Test",
+    "text": "Two sample t-Test\nThe two sample t-Test is used to compare two groups of data: Related to our example, we test the following hypotheses:\n\\(H_0\\): Both drugs have the same effect.\n\\(H_A\\): The drugs have a different effect, i.e. one of the drugs is stronger."
+  },
+  {
+    "objectID": "qmd/06-classical-tests.html#paired-t-test",
+    "href": "qmd/06-classical-tests.html#paired-t-test",
+    "title": "Classical Tests",
+    "section": "Paired t-test",
+    "text": "Paired t-test\nGiven is a number of students that passed an examination in statistics. The examination was written two times, one time before and one time after an additional series of lectures. The values represent the numbers of points approached during the examination. Check whether the additional lectures had any positive effect:\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
+  },
+  {
+    "objectID": "qmd/06-classical-tests.html#wilcoxon-test-optional",
+    "href": "qmd/06-classical-tests.html#wilcoxon-test-optional",
+    "title": "Classical Tests",
+    "section": "Wilcoxon test (optional)",
+    "text": "Wilcoxon test (optional)\nThe Mann-Whitney and Wilxon tests are nonparametric tests of location. “Nonparametric” means, that the general location of the distributions is compared and not a parameter like the mean. This makes the test independent of distributional assumptions, but can sometimes lead to a vague interpretations."
+  },
+  {
+    "objectID": "qmd/06-classical-tests.html#own-project-weight-of-clementine-fruits",
+    "href": "qmd/06-classical-tests.html#own-project-weight-of-clementine-fruits",
+    "title": "Classical Tests",
+    "section": "Own project: Weight of Clementine fruits",
+    "text": "Own project: Weight of Clementine fruits\nImport the Clementines data set (fruits-2023-hse.csv)1.\n\nThink about an appropriate data structure and use a suitable statistical test to compare the weights.\nCheck variance homogeneity and normal distribution graphically.\nCan the weights from each brand be considered as independent samples?\n\nfruits.csv available from: https://tpetzoldt.github.io/datasets/data/fruits-2023-hse.csv"
+  },
+  {
+    "objectID": "qmd/06-classical-tests.html#chi-squared-test-and-fishers-exact-test-optional",
+    "href": "qmd/06-classical-tests.html#chi-squared-test-and-fishers-exact-test-optional",
+    "title": "Classical Tests",
+    "section": "Chi-squared test and Fisher’s exact test (optional)",
+    "text": "Chi-squared test and Fisher’s exact test (optional)\nIntroduction\nTaken from Agresti (2002), Fisher’s Tea Drinker:\n“A British woman claimed to be able to distinguish whether milk or tea was added to the cup first. To test, she was given 8 cups of tea, in four of which milk was added first. The null hypothesis is that there is no association between the true order of pouring and the woman’s guess, the alternative that there is a positive association (that the odds ratio is greater than 1).”"
+  },
+  {
+    "objectID": "qmd/06-classical-tests.html#exercise-solutions",
+    "href": "qmd/06-classical-tests.html#exercise-solutions",
+    "title": "Classical Tests",
+    "section": "Exercise Solutions",
+    "text": "Exercise Solutions"
+  },
+  {
+    "objectID": "qmd/06-classical-tests.html#references",
+    "href": "qmd/06-classical-tests.html#references",
+    "title": "Classical Tests",
+    "section": "References",
+    "text": "References\n\nStudent (1908) - The probable error of a mean\nDelacre et al. (2017) - Why psychologists should by default use Welch’s t-test instead of Student’s t-test\n\n\n\n\n\nDelacre, M., Lakens, D., & Leys, C. (2017). Why psychologists should by default use Welch’s t-test instead of Student’s t-test. International Review of Social Psychology, 30(1), 92–101. https://doi.org/10.5334/irsp.82\n\n\nStudent. (1908). The probable error of a mean. Biometrika, 6(1), 1–25. https://doi.org/10.2307/2331554"
+  },
+  {
+    "objectID": "qmd/04-distributions-leaves.html",
+    "href": "qmd/04-distributions-leaves.html",
+    "title": "Distribution and Confidence Intervals of Maple Leaf Samples",
+    "section": "",
+    "text": "The example aims to demonstrate estimation and interpretation of prediction intervals and confidence intervals. At the end, the two samples are compared with respect to variance and mean values.\nThe experimental hypotheses is, that the sampling strategy has an influence on the parameters of the distribution, i.e. that a sampling bias may occur. Here we leave it open, if the “subjective sampling” strategy prefers bigger or smaller leaves or if it has an influence on variance. The result is to be visualized with bar charts and box plots. We use the leave width as an example, an analysis of the other variables is left as an optional exercise.\nWe can now derive the following statistical hypotheses about the variance:\n\n\n\\(H_0\\): The variance of both samples is the same.\n\n\\(H_a\\): The samples have different variance.\n\nand about the mean:\n\n\n\\(H_0\\): The mean of both samples is the same.\n\n\\(H_a\\): The mean values of the samples are different."
+  },
+  {
+    "objectID": "qmd/04-distributions-leaves.html#prepare-and-inspect-data",
+    "href": "qmd/04-distributions-leaves.html#prepare-and-inspect-data",
+    "title": "Distribution and Confidence Intervals of Maple Leaf Samples",
+    "section": "\n3.1 Prepare and inspect data",
+    "text": "3.1 Prepare and inspect data\nThe data set is available from your local learning management system (LMS, e.g. OPAL at TU Dresden) or publicly from https://tpetzoldt.github.io/datasets/data/leaves.csv.\n\nDownload the data set leaves.csv and use one of RStudio’s “Import Dataset” wizards.\nAlternative: use read.csv().\n\n\nShow code#  ... do it\n\n\n\nplot everything, just for testing:\n\n\nShow codeplot(leaves)\n\n\n\nFirst, let’s apply a traditional approach and split leaves in two separate tables for the samples HSE and MHYB:\n\n\nShow codehyb &lt;- subset(leaves, group == \"HYB\")\nhse &lt;- subset(leaves, group == \"HSE\")\n\n\n\nThen, compare leaf width of both groups graphically:\n\n\nShow codeboxplot(hse$width, hyb$width, names=c(\"HSE\", \"HYB\"))"
+  },
+  {
+    "objectID": "qmd/04-distributions-leaves.html#check-distribution",
+    "href": "qmd/04-distributions-leaves.html#check-distribution",
+    "title": "Distribution and Confidence Intervals of Maple Leaf Samples",
+    "section": "\n3.2 Check distribution",
+    "text": "3.2 Check distribution\n\nShow code# use `hist`, `qqnorm`, `qqline`\n# ..."
+  },
+  {
+    "objectID": "qmd/04-distributions-leaves.html#sample-statistics-and-prediction-interval",
+    "href": "qmd/04-distributions-leaves.html#sample-statistics-and-prediction-interval",
+    "title": "Distribution and Confidence Intervals of Maple Leaf Samples",
+    "section": "\n3.3 Sample statistics and prediction interval",
+    "text": "3.3 Sample statistics and prediction interval\nIn a first analysis, we want to estimate the interval that covers 95% of leaves, defined by their width. As a first method, we take the empirical quantiles directly from the data. The method is also called “nonparametric,” because we don’t calculate mean and standard deviation and do not assume a normal or any other distribution.\n\nShow codequantile(hse$width, p = c(0.025, 0.975))\n\n\nNow, we compare this empirical result with a method that relies on a specific distribution. If our initial graphical visualization (e.g., the histogram) suggests the data is reasonably symmetric and bell-shaped, we can proceed with a parametric assumption.\nWe first calculate mean, sd, N and se for “hse” data set:\n\nShow codehse.mean &lt;- mean(hse$width)\nhse.sd   &lt;- sd(hse$width)\nhse.N    &lt;- length(hse$width)\nhse.se   &lt;- hse.sd/sqrt(hse.N)\n\n\nThen we estimate an approximate two-sided 95% prediction interval (\\(PI\\)) for the sample using a simplified approach based on the quantiles of the theoretical normal distribution (\\(z_{\\alpha/2} \\approx 1.96\\)) and the sample parameters mean \\(\\bar{x}\\) and standard deviation (\\(s\\)):\n\\[\nPI = \\bar{x} \\pm z \\cdot s\n\\]\nThis is the interval where we would predict a new single observation to fall with 95% confidence.\n\nShow codehse.95 &lt;- hse.mean + c(-1.96, 1.96) * hse.sd\nhse.95\n\n\nInstead of using 1.96, we could also use the quantile function qnorm(0.975) for the upper interval or qnorm(c(0.025, 0.975)) for the lower and upper in parallel:\n\nShow codehse.95 &lt;- hse.mean + qnorm(c(0.025, 0.975)) * hse.sd\nhse.95\n\n\nNow we plot the data and indicate the 95% interval:\n\nShow codeplot(hse$width)\nabline(h = hse.95, col=\"red\")\n\n\n… and the same as histogram:\n\nShow codehist(hse$width)\nabline(v = hse.95, col=\"red\")\nrug(hse$width, col=\"blue\")"
+  },
+  {
+    "objectID": "qmd/04-distributions-leaves.html#confidence-interval-of-the-mean",
+    "href": "qmd/04-distributions-leaves.html#confidence-interval-of-the-mean",
+    "title": "Distribution and Confidence Intervals of Maple Leaf Samples",
+    "section": "\n3.4 Confidence interval of the mean",
+    "text": "3.4 Confidence interval of the mean\nThe confidence interval (\\(CI\\)) of the mean tells us how precise a mean value was estimated from data. If the sample size is “large enough”, the distribution of the raw data does not necessarily need to be normal, because then mean values tend to approximate a normal distribution due to the central limit theorem.\nThe formula for the CI of the mean is: \\[CI = \\bar{x} \\pm t_{\\alpha/2, n-1} \\cdot \\frac{s}{\\sqrt{N}}\\]\n\n3.4.1 Confidence interval of the mean for the “hse” data\nTask: Calculate the confidence interval of the mean value of the “hse” data set using the quantile function (qt) of the t-distribution1:\n\nShow codehse.ci &lt;- hse.mean + qt(p = c(0.025, 0.975), df = hse.N - 1) * hse.se\n\n\nNow indicate the confidence interval of the mean in the histogram.\n\nShow codeabline(v = hse.ci, col=\"magenta\")\n\n\n\n3.4.2 Confidence interval for the mean of the “hyb” data\n\nShow code#  Do the same for the \"hyb\" data, calculate mean, sd, N, se and ci.\n# ...\n\n\n\n3.4.3 Discussion: Comparison and interpretation\nExplain the fundamental statistical reason why the 95% Prediction Interval (PI) for the leaf width is always significantly wider than the 95% Confidence Interval (CI) for the mean leaf width, even though both intervals are calculated from the same data set (hse)."
+  },
+  {
+    "objectID": "qmd/04-distributions-leaves.html#comparison-of-the-samples",
+    "href": "qmd/04-distributions-leaves.html#comparison-of-the-samples",
+    "title": "Distribution and Confidence Intervals of Maple Leaf Samples",
+    "section": "\n3.5 Comparison of the samples",
+    "text": "3.5 Comparison of the samples\nTo compare the two samples. we already created box plots at the beginning. Instead of a boxplot, we can also use a bar chart with confidence intervals.\nThis can be done with the add-on package gplots (not to be confused with ggplot):\nSolution A) with package gplots\n\nShow codelibrary(\"gplots\")\nbarplot2(height = c(hyb.mean, hse.mean),\n         ci.l   = c(hyb.ci[1], hse.ci[1]),\n         ci.u   = c(hyb.ci[2], hse.ci[2]),\n         plot.ci = TRUE,\n         names.arg=c(\"Hyb\", \"HSE\")\n)\n\n\nSolution B) without add-on packages (optional)\nHere we use a standard bar chart, and line segments for the error bars. One small problem arises, because barplot creates an own x-scaling. The good news is, that barplot returns its x-scale. We can store it in a variable, e.g. x that can then be used in subsequent code.\n\nShow codex &lt;- barplot(c(hyb.mean, hse.mean),\n  names.arg=c(\"HYB\", \"HSE\"), ylim=c(0, 150))\nsegments(x0=x[1], y0=hyb.ci[1], y1=hyb.ci[2], lwd=2)\nsegments(x0=x[2], y0=hse.ci[1], y1=hse.ci[2], lwd=2)"
+  },
+  {
+    "objectID": "qmd/04-distributions-leaves.html#is-the-difference-between-the-samples-statistically-significant",
+    "href": "qmd/04-distributions-leaves.html#is-the-difference-between-the-samples-statistically-significant",
+    "title": "Distribution and Confidence Intervals of Maple Leaf Samples",
+    "section": "\n3.6 Is the difference between the samples statistically significant?",
+    "text": "3.6 Is the difference between the samples statistically significant?\nIn the following, we compare the two samples with t- and F-Tests.\nHypotheses:\n\\(H_0\\): Both samples have the same mean width and variance.\n\\(H_A\\): The mean width (and possibly also the variance) differ because of more subjective sampling of HSE students. They may have prefered bigger or the nice small leaves.\n\nShow codet.test(width ~ group, data = leaves)\n\n\nPerform also the classical t-test (var.equal=TRUE) and the F-test (var.test). Calculate absolute and relative effect size (mean differences) and interpret the results of all 3 tests.\n\nShow code# var.test(...)\n# t.test(...)\n# ..."
+  },
+  {
+    "objectID": "qmd/04-distributions-leaves.html#calculation-of-summary-statistics-with-dplyr",
+    "href": "qmd/04-distributions-leaves.html#calculation-of-summary-statistics-with-dplyr",
+    "title": "Distribution and Confidence Intervals of Maple Leaf Samples",
+    "section": "\n4.1 Calculation of summary statistics with dplyr\n",
+    "text": "4.1 Calculation of summary statistics with dplyr\n\n\nShow codelibrary(\"dplyr\")\nleaves &lt;- read.csv(\"data/leaves.csv\")\n\nstats &lt;-\n  leaves |&gt;\n    group_by(group) |&gt;\n    summarize(mean = mean(width), sd = sd(width),\n              N = length(width), se = sd/sqrt(N),\n              lwr = mean + qt(p = 0.025, df = N-1) * se,\n              upr = mean + qt(p = 0.975, df = N-1) * se\n             )\n\nstats"
+  },
+  {
+    "objectID": "qmd/04-distributions-leaves.html#barchart-and-errorbars-with-ggplot2",
+    "href": "qmd/04-distributions-leaves.html#barchart-and-errorbars-with-ggplot2",
+    "title": "Distribution and Confidence Intervals of Maple Leaf Samples",
+    "section": "\n4.2 Barchart and errorbars with ggplot2\n",
+    "text": "4.2 Barchart and errorbars with ggplot2\n\n\nShow codelibrary(\"ggplot2\")\nstats |&gt;\n  ggplot(aes(x=group, y=mean, min=lwr, max=upr))  +\n    geom_col() + geom_errorbar(width=0.2)"
+  },
+  {
+    "objectID": "qmd/04-distributions-leaves.html#a-footnote-about-prediction-intervals",
+    "href": "qmd/04-distributions-leaves.html#a-footnote-about-prediction-intervals",
+    "title": "Distribution and Confidence Intervals of Maple Leaf Samples",
+    "section": "\n4.3 A footnote about prediction intervals",
+    "text": "4.3 A footnote about prediction intervals\nThe simplified \\(\\bar{x} \\pm z \\cdot s\\) formula used above is an approximation. A statistically rigorous 95% prediction interval, especially for smaller samples, needs two corrections.\nFirst, we would use the t-distribution with the quantile \\(t_{\\alpha/2, n-1}\\) (or qt(alpha/2, n-1) in R) instead of the normal quantiles (\\(\\pm 1.96\\)). Then we add a term \\(\\sqrt{1+1/N}\\) that corrects for the sample parameters. The full formula for a single future observation is then:\n\\[\\text{PI} = \\bar{x} \\pm t_{\\alpha/2, n-1} \\cdot s \\cdot \\sqrt{1 + \\frac{1}{N}}\\]\nThe prediction interval is related to the so-called “tolerance interval”. Both are the same if the population parameters \\(\\mu, \\sigma\\) are known or the sample size is very big. However, there are theoretical and practical differences in case of small sample size."
+  },
+  {
+    "objectID": "qmd/04-distributions-leaves.html#footnotes",
+    "href": "qmd/04-distributions-leaves.html#footnotes",
+    "title": "Distribution and Confidence Intervals of Maple Leaf Samples",
+    "section": "Footnotes",
+    "text": "Footnotes\n\nas the sample size is not too small, you may also compare this with 1.96 or 2.0↩︎"
+  },
+  {
+    "objectID": "qmd/02-discharge-elbe-project.html",
+    "href": "qmd/02-discharge-elbe-project.html",
+    "title": "Discharge of River Elbe: Other",
+    "section": "",
+    "text": "The project is related to the lab exercise “Discharge of River Elbe: Date and Time Computation, Data Management and Plotting with R”."
+  },
+  {
+    "objectID": "qmd/02-discharge-elbe-project.html#outline",
+    "href": "qmd/02-discharge-elbe-project.html#outline",
+    "title": "Discharge of River Elbe: Other",
+    "section": "\n3.1 Outline",
+    "text": "3.1 Outline\nCombine all tasks together and tell a story, using a standard scientific outline, the so-called IMRAD scheme:\n\nIntroduction\nMethods\nResults\nDiscussion\nReferences\n\nPlease consult Wikipedia for a detailed explanation.\nAs it is a tiny report, Methods and Results may be merged in this case. However, Introduction and Discussion must be separated. Use the internet and find about 2-3 literature references for the Discussion."
+  },
+  {
+    "objectID": "qmd/02-discharge-elbe-project.html#workflow",
+    "href": "qmd/02-discharge-elbe-project.html#workflow",
+    "title": "Discharge of River Elbe: Other",
+    "section": "\n3.2 Workflow",
+    "text": "3.2 Workflow\n\nDraft: draft your report. The first draft is usually somewhat longer.\nRefine: Discuss and select only the most important parts, and create the final version adhering to the page limit.\n\nCommunicate in your team, with other teams and with tutors\n\nPrimary Goal: Communication should promote community learning. Post approaches and specific questions in the Matrix^Matrix chat group so everyone can benefit.\nTeamwork: Discuss ideas within your team and with other colleagues first. Private channels for teamwork are allowed.\nIn the chatroom, please formulate specific questions (e.g., “How to format the numbers on a log-transformed axis?”) and avoid asking only, “Is this correct?”\nContribute: Actively contribute to answering your classmates’ questions!"
+  },
+  {
+    "objectID": "qmd/02-discharge-elbe-project.html#report-formatting-instructions",
+    "href": "qmd/02-discharge-elbe-project.html#report-formatting-instructions",
+    "title": "Discharge of River Elbe: Other",
+    "section": "\n3.3 Report formatting instructions",
+    "text": "3.3 Report formatting instructions\nTo ensure clarity and efficiency, please adhere to the following strict page limits and formatting guidelines.\n\n3.3.1 Page limits and content focus\n\nCore Content Limit: The main body of the report (Introduction, Methods & Results, Discussion) must not exceed 4 A4 pages.\nThis limit forces you to distill the essential messages and choose only the most important figures.\nThe Title Page (Cover Sheet) and the List of References do not count towards the 4-page limit.\nQuality First: The goal is Quality instead of quantity! Use the limited space to focus on the interpretation and discussion of your findings.\n\n3.3.2 Text and visual balance\n\nThe report must have a good balance between explanatory text and supporting figures/tables.\nAvoid reports that are dominated by either large amounts of text or excessive, unexplained graphics.\nSelectivity: Only include figures and statistical output that are essential to support your claims in the text. Avoid “dumping” unnecessary output.\n\n3.3.3 Readability and citation standards\n\nUse a font size of 11 or 12 points.\nA line spacing of 1.2 lines is recommended to improve readability.\nFigures: font size of annotations must be well readable.\nCitation: Cite literature properly using the author-year style. Good examples can be found at the APA style web page."
+  },
+  {
+    "objectID": "qmd/02-discharge-elbe-project.html#submission",
+    "href": "qmd/02-discharge-elbe-project.html#submission",
+    "title": "Discharge of River Elbe: Other",
+    "section": "\n3.4 Submission",
+    "text": "3.4 Submission\nYou will have 2.5 weeks time for the preparation of the report. Then upload it as PDF or HTML document and (optionally) your .R or Quarto (.qmd) scripts to the File folder of your group in the OPAL learning management system. Submissions after the deadline cannot be considered."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Template Project For Elements of Applied Statistics",
+    "section": "",
+    "text": "This website contains a collection of template for capstone’s Statistics with R. The aim is to provide insight in fundamental principles and a broad overview and to enable students to select and understand specific books and online material to dig in deeper in the diverse and fascinating field of statistics."
+  },
+  {
+    "objectID": "index.html#introduction",
+    "href": "index.html#introduction",
+    "title": "Template Project For Elements of Applied Statistics",
+    "section": "",
+    "text": "This website contains a collection of template for capstone’s Statistics with R. The aim is to provide insight in fundamental principles and a broad overview and to enable students to select and understand specific books and online material to dig in deeper in the diverse and fascinating field of statistics."
+  },
+  {
+    "objectID": "index.html#related-pages",
+    "href": "index.html#related-pages",
+    "title": "Template Project For Elements of Applied Statistics",
+    "section": "2 Related Pages",
+    "text": "2 Related Pages\n\nLecture slides\nDatasets\nGenAI Enterprise Analysis\nSource code  github"
+  },
+  {
+    "objectID": "index.html#author",
+    "href": "index.html#author",
+    "title": "Template Project For Elements of Applied Statistics",
+    "section": "3 Author",
+    "text": "3 Author\nAbdallah Khemais"
+  },
+  {
+    "objectID": "qmd/01-pivot-tables-with-libreoffice.html",
+    "href": "qmd/01-pivot-tables-with-libreoffice.html",
+    "title": "Discharge of River Elbe: Data Management with LibreOffice",
+    "section": "",
+    "text": "Planning and maintenance of waterways and rivers needs adequate measurements and data. Raw time series can often be long and confusing, so a first step is aggregation and visualization.\nScientific aim: plot an average year and calculate monthly averages, minima and maxima of the discharge."
+  },
+  {
+    "objectID": "qmd/01-pivot-tables-with-libreoffice.html#introduction",
+    "href": "qmd/01-pivot-tables-with-libreoffice.html#introduction",
+    "title": "Discharge of River Elbe: Data Management with LibreOffice",
+    "section": "",
+    "text": "Planning and maintenance of waterways and rivers needs adequate measurements and data. Raw time series can often be long and confusing, so a first step is aggregation and visualization.\nScientific aim: plot an average year and calculate monthly averages, minima and maxima of the discharge."
+  },
+  {
+    "objectID": "qmd/01-pivot-tables-with-libreoffice.html#methods",
+    "href": "qmd/01-pivot-tables-with-libreoffice.html#methods",
+    "title": "Discharge of River Elbe: Data Management with LibreOffice",
+    "section": "2 Methods",
+    "text": "2 Methods\n\n2.1 Diagram\n\n\nShow code\ngraph TD\n    A[Raw daily data - Elbe River]\n    A --&gt; B[Step 1: Data Acquisition]\n    B --&gt; C[Download CSV from URL]\n    C --&gt; D[Inspect data structure]\n    \n    D --&gt; E[Step 2: Preprocessing]\n    E --&gt; F[Rename columns]\n    F --&gt; G[Convert dates]\n    G --&gt; H[Extract year/month/day]\n    H --&gt; I[Extract weekday/DOY]\n    \n    I --&gt; J[Step 3: Aggregation]\n    J --&gt; K[Monthly aggregation]\n    J --&gt; L[Daily aggregation]\n    J --&gt; M[Annual aggregation]\n    \n    K --&gt; N[Step 4: Visualization]\n    L --&gt; O[Step 4: Visualization]\n    J --&gt; P[Step 5: Exploration]\n    J --&gt; Q[Step 5: Exploration]\n    \n    N --&gt; R[Results: Seasonal]\n    O --&gt; S[Results: Interannual]\n    P --&gt; T[Results: Yearly]\n    Q --&gt; U[Results: Accumulation]\n    \n    style A fill:#e1f5fe\n    style B fill:#f3e5f5\n    style C fill:#f3e5f5\n    style D fill:#f3e5f5\n    style E fill:#f3e5f5\n    style F fill:#f3e5f5\n    style G fill:#f3e5f5\n    style H fill:#f3e5f5\n    style I fill:#f3e5f5\n    style J fill:#e8f5e8\n    style K fill:#e8f5e8\n    style L fill:#e8f5e8\n    style M fill:#e8f5e8\n    style N fill:#fff3e0\n    style O fill:#fff3e0\n    style P fill:#fce4ec\n    style Q fill:#fce4ec\n    style R fill:#e8f5e8,stroke:#333\n    style S fill:#e8f5e8,stroke:#333\n    style T fill:#e8f5e8,stroke:#333\n    style U fill:#e8f5e8,stroke:#333\n\n\n\n\n\ngraph TD\n    A[Raw daily data - Elbe River]\n    A --&gt; B[Step 1: Data Acquisition]\n    B --&gt; C[Download CSV from URL]\n    C --&gt; D[Inspect data structure]\n    \n    D --&gt; E[Step 2: Preprocessing]\n    E --&gt; F[Rename columns]\n    F --&gt; G[Convert dates]\n    G --&gt; H[Extract year/month/day]\n    H --&gt; I[Extract weekday/DOY]\n    \n    I --&gt; J[Step 3: Aggregation]\n    J --&gt; K[Monthly aggregation]\n    J --&gt; L[Daily aggregation]\n    J --&gt; M[Annual aggregation]\n    \n    K --&gt; N[Step 4: Visualization]\n    L --&gt; O[Step 4: Visualization]\n    J --&gt; P[Step 5: Exploration]\n    J --&gt; Q[Step 5: Exploration]\n    \n    N --&gt; R[Results: Seasonal]\n    O --&gt; S[Results: Interannual]\n    P --&gt; T[Results: Yearly]\n    Q --&gt; U[Results: Accumulation]\n    \n    style A fill:#e1f5fe\n    style B fill:#f3e5f5\n    style C fill:#f3e5f5\n    style D fill:#f3e5f5\n    style E fill:#f3e5f5\n    style F fill:#f3e5f5\n    style G fill:#f3e5f5\n    style H fill:#f3e5f5\n    style I fill:#f3e5f5\n    style J fill:#e8f5e8\n    style K fill:#e8f5e8\n    style L fill:#e8f5e8\n    style M fill:#e8f5e8\n    style N fill:#fff3e0\n    style O fill:#fff3e0\n    style P fill:#fce4ec\n    style Q fill:#fce4ec\n    style R fill:#e8f5e8,stroke:#333\n    style S fill:#e8f5e8,stroke:#333\n    style T fill:#e8f5e8,stroke:#333\n    style U fill:#e8f5e8,stroke:#333\n\n\n\n\n\n\nThe approach demonstrates the use of pivot tables for aggregating data according to certain criteria. We will also use date and time computation to derive aggregation criteria from a single date column.\nThe data set consists of daily measurements for discharge of the Elbe River in Dresden (daily discharge sum in \\(\\mathrm{m^3 d^{-1}}\\)).\nData were kindly provided by the German Federal Institute for Hydrology (BfG)."
+  },
+  {
+    "objectID": "qmd/01-pivot-tables-with-libreoffice.html#task-1",
+    "href": "qmd/01-pivot-tables-with-libreoffice.html#task-1",
+    "title": "Discharge of River Elbe: Data Management with LibreOffice",
+    "section": "3 Task 1",
+    "text": "3 Task 1\n\n3.1 1. Download the data and inspect it\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n3.2 2. Create date categories\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n3.3 3. Aggregate data\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n3.4 4. Average year plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n3.5 5. Annual discharge sum\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n3.6 6. Additional explorations\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
+  },
+  {
+    "objectID": "qmd/01-pivot-tables-with-libreoffice.html#conclusion",
+    "href": "qmd/01-pivot-tables-with-libreoffice.html#conclusion",
+    "title": "Discharge of River Elbe: Data Management with LibreOffice",
+    "section": "4 Conclusion",
+    "text": "4 Conclusion\nThis study demonstrated a comprehensive methodology for analyzing hydrological time series data, using the daily discharge of the Elbe River in Dresden as a case study. The analysis pipeline was organized around five key steps:"
+  },
+  {
+    "objectID": "qmd/01-pivot-tables-with-libreoffice.html#key-learnings",
+    "href": "qmd/01-pivot-tables-with-libreoffice.html#key-learnings",
+    "title": "Discharge of River Elbe: Data Management with LibreOffice",
+    "section": "5 Key Learnings",
+    "text": "5 Key Learnings\n\nData Structuring: Transforming raw data into usable time series requires crucial preprocessing steps, including date conversion and extraction of temporal variables (year, month, day of year).\nMulti-level Aggregation: Analysis at different temporal scales (daily, monthly, annual) reveals complementary patterns:\n\nMonthly aggregation highlights seasonal variability\nThe average year plot illustrates the annual hydrological cycle\nAnnual totals help identify interannual trends\n\nInformative Visualizations: Different visualization types (average year plot with variability bands, annual histograms, temporal scatter plots) provide specific and complementary insights into the hydrological system’s behavior."
+  },
+  {
+    "objectID": "qmd/01-pivot-tables-with-libreoffice.html#practical-implications",
+    "href": "qmd/01-pivot-tables-with-libreoffice.html#practical-implications",
+    "title": "Discharge of River Elbe: Data Management with LibreOffice",
+    "section": "6 Practical Implications",
+    "text": "6 Practical Implications\nFor waterway and river management, this approach enables: - Identification of characteristic high and low water periods - Detection of anomalies or changes in hydrological regimes - Provision of reference data for planning and maintenance - Effective communication of complex patterns through synthesized visualizations"
+  },
+  {
+    "objectID": "qmd/01-pivot-tables-with-libreoffice.html#future-perspectives",
+    "href": "qmd/01-pivot-tables-with-libreoffice.html#future-perspectives",
+    "title": "Discharge of River Elbe: Data Management with LibreOffice",
+    "section": "7 Future Perspectives",
+    "text": "7 Future Perspectives\nThe presented methods are transferable to other river systems and types of environmental data. The aggregation and visualization steps provide a solid foundation for more advanced analyses, such as long-term trend detection, flood frequency analysis, or studying climate change impacts on hydrological regimes.\nThis study illustrates how fundamental data management and analysis techniques can transform complex raw measurements into actionable information for sustainable water resource management. The systematic approach from data acquisition through preprocessing, aggregation, and visualization provides a reproducible framework that can be adapted to various hydrological monitoring and research contexts."
+  },
+  {
+    "objectID": "qmd/03-discharge-elbe.html",
+    "href": "qmd/03-discharge-elbe.html",
+    "title": "Discharge of River Elbe: Date and Time Computation, Data Management and Plotting with R",
+    "section": "",
+    "text": "This practical example demonstrates how daily discharge data of the Elbe River can be analyzed and visualized in R directly in a browser using Web-R.\nScientific aim: Learn date/time computation, data management, aggregation, and plotting."
+  },
+  {
+    "objectID": "qmd/03-discharge-elbe.html#introduction",
+    "href": "qmd/03-discharge-elbe.html#introduction",
+    "title": "Discharge of River Elbe: Date and Time Computation, Data Management and Plotting with R",
+    "section": "",
+    "text": "This practical example demonstrates how daily discharge data of the Elbe River can be analyzed and visualized in R directly in a browser using Web-R.\nScientific aim: Learn date/time computation, data management, aggregation, and plotting."
+  },
+  {
+    "objectID": "qmd/03-discharge-elbe.html#methods",
+    "href": "qmd/03-discharge-elbe.html#methods",
+    "title": "Discharge of River Elbe: Date and Time Computation, Data Management and Plotting with R",
+    "section": "2 Methods",
+    "text": "2 Methods\nWe demonstrate data import, conversion, aggregation, plotting, and pipeline usage using the tidyverse. Data are daily measurements for the Elbe River (m³/s) from Dresden, provided by BfG."
+  },
+  {
+    "objectID": "qmd/03-discharge-elbe.html#exercises",
+    "href": "qmd/03-discharge-elbe.html#exercises",
+    "title": "Discharge of River Elbe: Date and Time Computation, Data Management and Plotting with R",
+    "section": "3 Exercises",
+    "text": "3 Exercises\n\n3.1 1. Download the data and inspect it\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n3.2 2. Create date categories\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n3.3 3. Aggregate monthly data\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n3.4 4. Average year plot\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n3.5 5. Annual discharge sum\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n3.6 6. Scatter plot per year\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n3.7 7. Cumulative sum per year\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n3.8 8. Min-Max Plot with ggplot2\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n3.9 9. Pivot table (wide ↔︎ long)\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
+  },
+  {
+    "objectID": "qmd/05-distributions-fruits-tidyverse.html",
+    "href": "qmd/05-distributions-fruits-tidyverse.html",
+    "title": "Distribution and Confidence Intervals of Clementines",
+    "section": "",
+    "text": "The example aims to demonstrate estimation and interpretation of confidence intervals. At the end, the two samples are compared with respect to variance and mean values.\nThe experimental hypotheses was, that weight and size of two samples of Clementine fruits differ. The result is to be visualized with bar charts or box plots. We use only the weight as an example, analysis of the other statistical parameters is left as an optional exercise.\nWe can now derive the following statistical hypotheses about the variance:\n\n\n\\(H_0\\): The variance of both samples is the same.\n\n\\(H_a\\): The samples have different variance.\n\nand about the mean:\n\n\n\\(H_0\\): The mean of both samples is the same.\n\n\\(H_a\\): The mean values of the samples are different."
+  },
+  {
+    "objectID": "qmd/05-distributions-fruits-tidyverse.html#prepare-and-inspect-data",
+    "href": "qmd/05-distributions-fruits-tidyverse.html#prepare-and-inspect-data",
+    "title": "Distribution and Confidence Intervals of Clementines",
+    "section": "\n3.1 Prepare and inspect data",
+    "text": "3.1 Prepare and inspect data\n\nDownload the data set fruits-2023-hse.csv and use one of RStudio’s “Import Dataset” wizards.\nA better alternative is to use read.csv().\nThe data set is available in OPAL1 or from: https://raw.githubusercontent.com/tpetzoldt/datasets/refs/heads/main/data/fruits-2023-hse.csv\n\n\n\nShow code#  ... do it\n\n\n\nplot everything, just for testing:\n\n\nShow codeplot(fruits)\n\n\n\nsplit table for box1 and box2:\n\n\nShow codebox1 &lt;- subset(fruits, brand == \"box1\")\nbox2 &lt;- subset(fruits, brand == \"box2\")\n\n\n\ncompare weight of both groups:\n\n\nShow codeboxplot(box1$weight, box2$weight, names=c(\"box1\", \"box2\"))\n\n\nNote: It is also possible to use boxplot with the model formula syntax. This is the preferred way, because it does not require to split the data set beforehand:\n\nShow codeboxplot(weight ~ brand, data = fruits)"
+  },
+  {
+    "objectID": "qmd/05-distributions-fruits-tidyverse.html#check-distribution",
+    "href": "qmd/05-distributions-fruits-tidyverse.html#check-distribution",
+    "title": "Distribution and Confidence Intervals of Clementines",
+    "section": "\n3.2 Check distribution",
+    "text": "3.2 Check distribution\nWe can check the shape of distribution graphically. If mean values of the samples differ much, it has to be done separately for each sample.\n\nShow code# use `hist`, `qqnorm`, `qqline`\n# ..."
+  },
+  {
+    "objectID": "qmd/05-distributions-fruits-tidyverse.html#sample-statistics",
+    "href": "qmd/05-distributions-fruits-tidyverse.html#sample-statistics",
+    "title": "Distribution and Confidence Intervals of Clementines",
+    "section": "\n3.3 Sample statistics",
+    "text": "3.3 Sample statistics\nIf we assume normal distribution of the data, we can estimate an approximate prediction interval from the sample parameters, i.e. in which size range we find 95% of the weights within one group.\nWe first calculate mean, sd, N and se for “box1” data set:\n\nShow codebox1.mean &lt;- mean(box1$weight)\nbox1.sd   &lt;- sd(box1$weight)\nbox1.N    &lt;- length(box1$weight)\nbox1.se   &lt;- box1.sd/sqrt(box1.N)\n\n\nThen we estimate the two-sided 95% prediction interval for the sample, assuming normal distribution:\n\nShow codebox1.95 &lt;- box1.mean + c(-1.96, 1.96) * box1.sd\nbox1.95\n\n\nInstead of using 1.96, we could also use the quantile function of the normal distribution instead, e.g. qnorm(0.975)for the upper interval or qnorm(c(0.025, 0.975)) for the lower and upper.\nIf the data set is large enough, we can compare the prediction interval from above with the empirical quantiles, i.e. take it directly from the data. Here we do not assume a normal or any other distribution.\n\nShow codequantile(box1$weight, p = c(0.025, 0.975))\n\n\nNow we plot the data and indicate the 95% interval:\n\nShow codeplot(box1$weight)\nabline(h = box1.95, col=\"red\")\n\n\n… and the same as histogram:\n\nShow codehist(box1$weight)\nabline(v = box1.95, col=\"red\")\nrug(box1$weight, col=\"blue\")"
+  },
+  {
+    "objectID": "qmd/05-distributions-fruits-tidyverse.html#confidence-interval-of-the-mean",
+    "href": "qmd/05-distributions-fruits-tidyverse.html#confidence-interval-of-the-mean",
+    "title": "Distribution and Confidence Intervals of Clementines",
+    "section": "\n3.4 Confidence interval of the mean",
+    "text": "3.4 Confidence interval of the mean\nThe confidence interval of the mean tells us how precise a mean value was estimated from data. If the sample size is “large enough”, the distribution of the raw data does not necessarily need to be normal distributed, because then mean values tend to approximate a normal distribution due to the central limit theorem.\n\n3.4.1 Confidence interval of the mean for the “box1” data\n\nCalculate the confidence interval of the mean value of the “box1” data set,\nuse +/- 1.96 or (better) the quantile of the t-distribution:\n\n\nShow codebox1.ci &lt;- box1.mean + qt(p = c(0.025, 0.975), df = box1.N-1) * box1.se\n\n\nNow indicate the confidence interval of the mean in the histogram.\n\nShow codeabline(v = box1.ci, col=\"red\")\n\n\n\n3.4.2 Confidence interval for the mean of the “box2” data\nWe could now in principle do the same as above for the “box2” sample, but this would be rather cumbersome and boring. A more efficient method from package dplyr is shown below."
+  },
+  {
+    "objectID": "qmd/05-distributions-fruits-tidyverse.html#calculation-of-summary-statistics-with-dplyr",
+    "href": "qmd/05-distributions-fruits-tidyverse.html#calculation-of-summary-statistics-with-dplyr",
+    "title": "Distribution and Confidence Intervals of Clementines",
+    "section": "\n5.1 Calculation of summary statistics with dplyr\n",
+    "text": "5.1 Calculation of summary statistics with dplyr\n\nSummarizing can be done with two functions, group_by that adds grouping information to a data frame and summarize to calculate summary statistics. In the following, we use the full data set with 4 groups.\n\nShow codelibrary(\"dplyr\")\nfruits &lt;- read.csv(\"fruits-2023-hse.csv\")\n\nstats &lt;-\n  fruits |&gt;\n    group_by(brand) |&gt;\n    summarize(mean = mean(weight), sd=sd(weight), N=length(weight), se=sd/sqrt(N),\n              lwr = mean + qt(p = 0.025, df = N-1) * se,\n              upr = mean + qt(p = 0.975, df = N-1) * se\n             )\n\nstats"
+  },
+  {
+    "objectID": "qmd/05-distributions-fruits-tidyverse.html#barchart-and-errorbars-with-ggplot2",
+    "href": "qmd/05-distributions-fruits-tidyverse.html#barchart-and-errorbars-with-ggplot2",
+    "title": "Distribution and Confidence Intervals of Clementines",
+    "section": "\n5.2 Barchart and errorbars with ggplot2\n",
+    "text": "5.2 Barchart and errorbars with ggplot2\n\nWe can then use the table of summary statistics directly for a bar chart.\n\nShow codelibrary(\"ggplot2\")\nstats |&gt;\n  ggplot(aes(x=brand, y=mean, min=lwr, max=upr))  +\n    geom_col() + geom_errorbar()"
+  },
+  {
+    "objectID": "qmd/05-distributions-fruits-tidyverse.html#additional-tasks",
+    "href": "qmd/05-distributions-fruits-tidyverse.html#additional-tasks",
+    "title": "Distribution and Confidence Intervals of Clementines",
+    "section": "\n5.3 Additional tasks",
+    "text": "5.3 Additional tasks\nRepeat the analysis with other properties of the fruits, e.g. width and height. Create box plots, analyse distribution, create bar charts."
+  },
+  {
+    "objectID": "qmd/05-distributions-fruits-tidyverse.html#footnotes",
+    "href": "qmd/05-distributions-fruits-tidyverse.html#footnotes",
+    "title": "Distribution and Confidence Intervals of Clementines",
+    "section": "Footnotes",
+    "text": "Footnotes\n\nOPAL is the learning management system used at TU Dresden.↩︎"
+  },
+  {
+    "objectID": "qmd/07-enterprise-genai-slides.html#objectifs-du-projet",
+    "href": "qmd/07-enterprise-genai-slides.html#objectifs-du-projet",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "Objectifs du projet",
+    "text": "Objectifs du projet\n\nDécrire l’adoption des outils GenAI / LLMs en entreprise\nComparer pays et secteurs d’activité\nMesurer l’impact sur :\n\nle nombre d’employés impactés\nles nouveaux rôles créés\nla productivité déclarée\n\nIllustrer le ressenti des salariés (“Employee Sentiment”)",
+    "crumbs": [
+      "Presentations",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/07-enterprise-genai-slides.html#données-utilisées",
+    "href": "qmd/07-enterprise-genai-slides.html#données-utilisées",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "Données utilisées",
+    "text": "Données utilisées\n\nSource : “Enterprise GenAI Adoption & Workforce Impact” (Kaggle)\nUnité : 1 ligne = 1 entreprise\nVariables clés :\n\ncountry, industry, tool, adoption_year\nemployees_imp, new_roles, training_hours\nprod_change (changement de productivité en %)\nsentiment (commentaire texte)",
+    "crumbs": [
+      "Presentations",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/07-enterprise-genai-slides.html#émergence-temporelle",
+    "href": "qmd/07-enterprise-genai-slides.html#émergence-temporelle",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "Émergence temporelle",
+    "text": "Émergence temporelle",
+    "crumbs": [
+      "Presentations",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/07-enterprise-genai-slides.html#productivité-moyenne-par-année",
+    "href": "qmd/07-enterprise-genai-slides.html#productivité-moyenne-par-année",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "Productivité moyenne par année",
+    "text": "Productivité moyenne par année",
+    "crumbs": [
+      "Presentations",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/07-enterprise-genai-slides.html#pays-les-plus-concernés",
+    "href": "qmd/07-enterprise-genai-slides.html#pays-les-plus-concernés",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "Pays les plus concernés",
+    "text": "Pays les plus concernés",
+    "crumbs": [
+      "Presentations",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/07-enterprise-genai-slides.html#secteurs-et-métiers",
+    "href": "qmd/07-enterprise-genai-slides.html#secteurs-et-métiers",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "Secteurs et métiers",
+    "text": "Secteurs et métiers\n\nSecteurs avec le plus d’employés impactés\nNouveaux rôles créés (prompt engineer, data/AI specialist, etc.)",
+    "crumbs": [
+      "Presentations",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/07-enterprise-genai-slides.html#performance-par-outil",
+    "href": "qmd/07-enterprise-genai-slides.html#performance-par-outil",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "Performance par Outil",
+    "text": "Performance par Outil\n\nQuestion : L’outil choisi impacte-t-il le gain de productivité ?\nMéthode : Test ANOVA\n\n\nRésultat : Aucune différence significative. Tous les outils se valent (~18.5%).",
+    "crumbs": [
+      "Presentations",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/07-enterprise-genai-slides.html#conclusion",
+    "href": "qmd/07-enterprise-genai-slides.html#conclusion",
+    "title": "Adoption des outils GenAI / LLMs en entreprise",
+    "section": "Conclusion",
+    "text": "Conclusion\n\nAdoption massive (2022–2024)\nPodium Pays : Brésil, Australie, Canada\nProductivité : Gain stable (~18.5%) peu importe l’année ou l’outil\nImpact Humain : Inquiétude réelle malgré les gains\n\nPerspectives : - L’accompagnement (Formation) doit évoluer (pas d’impact volume actuellement) - Mieux cibler les cas d’usage par métier",
+    "crumbs": [
+      "Presentations",
+      "Adoption des outils GenAI / LLMs en entreprise"
+    ]
+  },
+  {
+    "objectID": "qmd/other.html#welcome",
+    "href": "qmd/other.html#welcome",
+    "title": "quarto-webr Demo RevealJS Document",
+    "section": "Welcome",
+    "text": "Welcome\nWelcome to a demo RevealJS presentation that uses the quarto-webr extension to generate interactive code cells with Quarto and webR.\n\n\n\n\n\n\nImportant\n\n\nThis template requires a pre-release version of Quarto that is 1.4.502 or greater that contains an updated copy of pandoc. For more details, please see Issue #14.\n\n\n\nNot the right template? Let’s go back to the documentation portal"
+  },
+  {
+    "objectID": "qmd/other.html#webr-in-revealjs",
+    "href": "qmd/other.html#webr-in-revealjs",
+    "title": "quarto-webr Demo RevealJS Document",
+    "section": "webR in RevealJS",
+    "text": "webR in RevealJS\nThis is a webR-enabled code cell in a Quarto RevealJS document.\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
+  },
+  {
+    "objectID": "qmd/other.html#base-r-graphing-with-webr",
+    "href": "qmd/other.html#base-r-graphing-with-webr",
+    "title": "quarto-webr Demo RevealJS Document",
+    "section": "Base R Graphing with webR",
+    "text": "Base R Graphing with webR\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
+  },
+  {
+    "objectID": "qmd/other.html#ggplot2-in-webr",
+    "href": "qmd/other.html#ggplot2-in-webr",
+    "title": "quarto-webr Demo RevealJS Document",
+    "section": "ggplot2 in webR",
+    "text": "ggplot2 in webR\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
+  },
+  {
+    "objectID": "qmd/other.html#help-documentation",
+    "href": "qmd/other.html#help-documentation",
+    "title": "quarto-webr Demo RevealJS Document",
+    "section": "Help Documentation",
+    "text": "Help Documentation\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
+  },
+  {
+    "objectID": "qmd/other.html#prints-warnings-and-errors",
+    "href": "qmd/other.html#prints-warnings-and-errors",
+    "title": "quarto-webr Demo RevealJS Document",
+    "section": "Prints, Warnings, and Errors",
+    "text": "Prints, Warnings, and Errors\n\nPlease enable JavaScript to experience the dynamic code cell content on this page."
+  },
+  {
+    "objectID": "qmd/other.html#keyboard-shortcuts",
+    "href": "qmd/other.html#keyboard-shortcuts",
+    "title": "quarto-webr Demo RevealJS Document",
+    "section": "Keyboard Shortcuts",
+    "text": "Keyboard Shortcuts\n\nRun selected code using either:\n\nmacOS: ⌘ + ↩︎/Return\nWindows/Linux: Ctrl + ↩︎/Enter\n\nRun the entire code by clicking the “Run code” button or pressing Shift+↩︎.\n\n\nPlease enable JavaScript to experience the dynamic code cell content on this page.\n\n\n\n\n\n\nNote\n\n\nAvoid using within a RevealJS presentation. Only 1 instance of webR should be running."
+  },
+  {
+    "objectID": "qmd/other.html#fin",
+    "href": "qmd/other.html#fin",
+    "title": "quarto-webr Demo RevealJS Document",
+    "section": "Fin",
+    "text": "Fin\nThanks for checking out the demo! Let’s head back to the documentation portal."
+  }
+]

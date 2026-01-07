@@ -52,7 +52,7 @@ rsconnect/
 **/.ipynb_checkpoints/
 
 # Quarto output files (générés automatiquement)
-/docs/
+# /docs/  # COMMENTÉ POUR GITHUB PAGES - Le dossier docs/ doit être versionné
 !docs/.nojekyll  # On garde .nojekyll
 !docs/CNAME      # On garde CNAME si présent
 
